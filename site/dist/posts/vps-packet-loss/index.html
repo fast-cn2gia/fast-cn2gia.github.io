@@ -1,0 +1,172 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>VPS 丢包率高怎么办？先查丢在哪一段，再决定要不要换线路 | CN2 GIA VPS 指南</title><meta name="description" content="VPS 丢包率高怎么办？先用多点测试和 MTR 查清丢包出在本地、国内、跨境还是机房，再对症处理。附普通线路和 CN2 GIA 的丢包实测对比，讲清什么情况只能换线路，BBR 又能帮多少。"><link rel="canonical" href="https://fast-cn2gia.github.io/posts/vps-packet-loss/"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="alternate" type="application/rss+xml" title="CN2 GIA VPS 指南" href="/rss.xml"><link rel="sitemap" href="/sitemap-index.xml"><meta property="og:type" content="article"><meta property="og:site_name" content="CN2 GIA VPS 指南"><meta property="og:title" content="VPS 丢包率高怎么办？先查丢在哪一段，再决定要不要换线路"><meta property="og:description" content="VPS 丢包率高怎么办？先用多点测试和 MTR 查清丢包出在本地、国内、跨境还是机房，再对症处理。附普通线路和 CN2 GIA 的丢包实测对比，讲清什么情况只能换线路，BBR 又能帮多少。"><meta property="og:url" content="https://fast-cn2gia.github.io/posts/vps-packet-loss/"><meta property="og:locale" content="zh_CN"><meta name="twitter:card" content="summary"><script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"VPS 丢包率高怎么办？先查丢在哪一段，再决定要不要换线路","description":"VPS 丢包率高怎么办？先用多点测试和 MTR 查清丢包出在本地、国内、跨境还是机房，再对症处理。附普通线路和 CN2 GIA 的丢包实测对比，讲清什么情况只能换线路，BBR 又能帮多少。","datePublished":"2026-10-31T00:00:00.000Z","dateModified":"2026-10-31T00:00:00.000Z","author":{"@type":"Person","name":"站长"},"publisher":{"@type":"Organization","name":"CN2 GIA VPS 指南"},"mainEntityOfPage":"https://fast-cn2gia.github.io/posts/vps-packet-loss/","inLanguage":"zh-CN"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://fast-cn2gia.github.io/"},{"@type":"ListItem","position":2,"name":"网络问题","item":"https://fast-cn2gia.github.io/category/problems/"},{"@type":"ListItem","position":3,"name":"VPS 丢包率高怎么办？先查丢在哪一段，再决定要不要换线路","item":"https://fast-cn2gia.github.io/posts/vps-packet-loss/"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"VPS 丢包率多少算正常？","acceptedAnswer":{"@type":"Answer","text":"按我的经验，4% 以内日常建站和远程登录都能用；在线交易、实时语音视频这类对稳定性要求高的业务，应该接近 0。CN2 GIA 这类优化线路可以做到。"}},{"@type":"Question","name":"延迟高和丢包有什么区别？","acceptedAnswer":{"@type":"Answer","text":"延迟是数据走一趟要多久，主要由距离决定。丢包是数据在路上丢了，要重新发送，或者干脆丢失。延迟高只是慢，丢包会让速度忽快忽慢、操作一卡一卡，体验往往更差。"}},{"@type":"Question","name":"为什么白天不丢包，晚上丢包严重？","acceptedAnswer":{"@type":"Answer","text":"多半是晚高峰跨境线路拥堵。晚上八点到十一点用网的人最多，普通国际线路的出口被挤满，就开始丢包。CN2 GIA 这类优化线路不和普通流量共用出口，晚上也比较稳。"}},{"@type":"Question","name":"MTR 中间节点丢包率很高，是线路有问题吗？","acceptedAnswer":{"@type":"Answer","text":"只要终点那一行不丢包，就不是问题。很多路由器会限制回应探测包的速度，中间跳显示 80% 甚至 95% 的丢包都很常见，真正的数据照样转发。"}},{"@type":"Question","name":"开了 BBR 还丢包，是 BBR 没生效吗？","acceptedAnswer":{"@type":"Answer","text":"不是。BBR 改善的是丢包时的传输速度，不会减少线路上的丢包。用 sysctl net.ipv4.tcpcongestioncontrol 能看到当前用的是不是 bbr，是的话就已经生效了。"}},{"@type":"Question","name":"CN2 GIA 会完全不丢包吗？","acceptedAnswer":{"@type":"Answer","text":"不能保证绝对为零。上面的实测中，搬瓦工洛杉矶 DC9 也有 1 个节点丢了 1%。按我长期使用的经验，CN2 GIA 这类线路到了晚高峰，丢包依旧接近 0，这一点普通线路很难做到。"}},{"@type":"Question","name":"ping 不丢包，但网站打开很慢是怎么回事？","acceptedAnswer":{"@type":"Answer","text":"丢包只是原因之一。带宽太小、服务器负载太高、网站本身没做缓存，都会让网页打开慢。先在 VPS 上看 CPU 和内存占用，再测带宽，排除了这些再看线路。"}}]}</script><style>.note[data-astro-cid-2nmadbt7]{border-left:4px solid var(--note-accent);background:var(--note-bg);border-radius:0 6px 6px 0;margin:1.5em 0;padding:.75em 1em;font-size:.88em;line-height:1.7}.note-tip[data-astro-cid-2nmadbt7]{--note-accent:#7a93ac;--note-bg:#7a93ac1a}.note-warning[data-astro-cid-2nmadbt7]{--note-accent:#d9a21b;--note-bg:#d9a21b1a}.note-title[data-astro-cid-2nmadbt7]{margin:0 0 .25em;font-weight:600}.note[data-astro-cid-2nmadbt7] p{margin:0}.note[data-astro-cid-2nmadbt7] p+p{margin-top:.5em}
+</style><link rel="stylesheet" href="/_astro/Base.BEzORkuK.css"></head><body><header class="site-header" id="site-header"><div class="container site-header-inner"><a class="site-name" href="/"><svg class="site-logo" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="currentColor"></rect><path d="M8 21h16M8 16h10M8 11h16" stroke="#fff" stroke-width="2.5" stroke-linecap="round"></path></svg>CN2 GIA VPS 指南</a><nav class="site-nav" aria-label="主导航"><a href="/category/basics/">基础知识</a><a href="/category/problems/" aria-current="page">网络问题</a><a href="/category/tutorial/">教程</a><a href="/category/review/">评测</a><a href="/category/recommend/">推荐</a></nav></div></header><main class="container"><div class="layout"><div class="layout-main"><article class="post"><nav class="breadcrumb" aria-label="面包屑"><a href="/">首页</a><span aria-hidden="true">/</span><a href="/category/problems/">网络问题</a></nav><h1>VPS 丢包率高怎么办？先查丢在哪一段，再决定要不要换线路</h1><p class="meta"><span>站长</span><time datetime="2026-10-31T00:00:00.000Z">发布于 2026年10月31日</time></p><details class="toc toc-inline"><summary>目录</summary><ul><li class="toc-depth-2"><a href="#先确认是真的丢包还是测得不对">先确认：是真的丢包，还是测得不对</a></li><li class="toc-depth-3"><a href="#丢包率多少算正常">丢包率多少算正常</a></li><li class="toc-depth-2"><a href="#丢包出在哪一段本地国内跨境机房">丢包出在哪一段：本地、国内、跨境、机房</a></li><li class="toc-depth-2"><a href="#用-mtr-找出丢包的那一跳">用 MTR 找出丢包的那一跳</a></li><li class="toc-depth-2"><a href="#最常见的原因晚高峰跨境线路拥堵">最常见的原因：晚高峰跨境线路拥堵</a></li><li class="toc-depth-2"><a href="#vps-丢包率高怎么办按原因对症处理">VPS 丢包率高怎么办：按原因对症处理</a></li><li class="toc-depth-3"><a href="#开-bbr-能解决丢包吗">开 BBR 能解决丢包吗</a></li><li class="toc-depth-2"><a href="#要换线路怎么挑一台晚高峰也稳的-vps">要换线路，怎么挑一台晚高峰也稳的 VPS</a></li><li class="toc-depth-2"><a href="#总结先定位再对症跨境拥堵就换线路">总结：先定位，再对症，跨境拥堵就换线路</a></li><li class="toc-depth-2"><a href="#常见问题">常见问题</a></li><li class="toc-depth-3"><a href="#vps-丢包率多少算正常">VPS 丢包率多少算正常？</a></li><li class="toc-depth-3"><a href="#延迟高和丢包有什么区别">延迟高和丢包有什么区别？</a></li><li class="toc-depth-3"><a href="#为什么白天不丢包晚上丢包严重">为什么白天不丢包，晚上丢包严重？</a></li><li class="toc-depth-3"><a href="#mtr-中间节点丢包率很高是线路有问题吗">MTR 中间节点丢包率很高，是线路有问题吗？</a></li><li class="toc-depth-3"><a href="#开了-bbr-还丢包是-bbr-没生效吗">开了 BBR 还丢包，是 BBR 没生效吗？</a></li><li class="toc-depth-3"><a href="#cn2-gia-会完全不丢包吗">CN2 GIA 会完全不丢包吗？</a></li><li class="toc-depth-3"><a href="#ping-不丢包但网站打开很慢是怎么回事">ping 不丢包，但网站打开很慢是怎么回事？</a></li></ul></details><div class="prose"><p>VPS 丢包率高怎么办？先别急着换机器，先查清楚丢包出在哪一段。家里网络、机房故障各有各的办法；最常见的原因是晚高峰跨境线路拥堵，这种情况调系统参数解决不了，只能换线路。</p>
+<p>很多人是这样发现 VPS 丢包严重的：白天一切正常，到了晚上，SSH 敲一个字母要等半秒，网站时快时慢，ping 一下还会断几次。</p>
+<p>下面按排查的顺序讲。</p>
+<h2 id="先确认是真的丢包还是测得不对">先确认：是真的丢包，还是测得不对</h2>
+<p>在 Windows 上直接 <code>ping</code> 一个地址，默认只发 4 个包，丢 1 个就是 25%，说明不了任何问题。至少连续 ping 100 次，结果才有参考价值。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D"># Windows：-n 指定次数</span></span>
+<span class="line"><span style="color:#B392F0">ping</span><span style="color:#79B8FF"> -n</span><span style="color:#79B8FF"> 100</span><span style="color:#9ECBFF"> 你的VPS地址</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># macOS / Linux：-c 指定次数</span></span>
+<span class="line"><span style="color:#B392F0">ping</span><span style="color:#79B8FF"> -c</span><span style="color:#79B8FF"> 100</span><span style="color:#9ECBFF"> 你的VPS地址</span></span></code></pre>
+<p>自己电脑上测的，只代表你家这一条路。想知道全国的情况，要用 ping.pe、ITDOG 这类多节点工具，让国内几十个节点同时测；具体用法在 <a href="/posts/vps-speed-test/">VPS 测速教程</a>里讲过。</p>
+<p>测的时间也有讲究，要在晚上八点到十一点之间再测一次。</p>
+<h3 id="丢包率多少算正常">丢包率多少算正常</h3>
+<p>按我的经验，丢包率在 4% 以内，日常建站、远程登录都能用，偶尔会觉得慢一下。对稳定性要求很高的业务，比如在线交易、实时语音和视频，丢包率应该接近 0。</p>
+<p>这是经验值，不同用途的感受差别很大：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-wrap"><table><thead><tr><th>用途</th><th>丢包时的表现</th><th>能接受的丢包</th></tr></thead><tbody><tr><td>网页、下载</td><td>丢了重传，主要是变慢</td><td>4% 以内可以用</td></tr><tr><td>SSH 远程操作</td><td>按键回显卡顿，一卡一卡</td><td>越低越好</td></tr><tr><td>语音、视频、游戏</td><td>丢了不重传，直接卡顿</td><td>接近 0</td></tr></tbody></table></div>
+<p>网页和下载走 TCP，丢了的包会重新发，所以丢包主要表现为变慢。语音、视频和游戏大多走 UDP，丢了就丢了，画面和声音会直接卡住。</p>
+<h2 id="丢包出在哪一段本地国内跨境机房">丢包出在哪一段：本地、国内、跨境、机房</h2>
+<p>一个数据包从你家到海外 VPS，大致要经过四段：你家的网络、国内运营商的网络、跨境的国际线路、海外机房。哪一段出问题，最后都会表现为丢包。</p>
+<p>每一段出问题时的样子不一样：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-wrap"><table><thead><tr><th>出问题的一段</th><th>典型现象</th><th>怎么确认</th></tr></thead><tbody><tr><td>本地网络</td><td>只有你家丢，换网络就好</td><td>换手机热点再测</td></tr><tr><td>国内运营商</td><td>个别地区、个别运营商丢</td><td>多点测试看分布</td></tr><tr><td>跨境线路</td><td>全国一起丢，晚上丢、白天好</td><td>晚上和白天各测一次</td></tr><tr><td>海外机房</td><td>全国全天都丢，白天也丢</td><td>看商家公告，发工单</td></tr></tbody></table></div>
+<p>排查的顺序是先排除本地，再看是不是全国都丢。全国都丢的话，再看白天和晚上有没有差别：只有晚上丢，基本就是跨境线路；白天也丢，多半是机房的问题。</p>
+
+<h2 id="用-mtr-找出丢包的那一跳">用 MTR 找出丢包的那一跳</h2>
+<p>ping 只能告诉你丢没丢，MTR 能看出丢在哪一跳。它把 ping 和路由追踪合在一起，对路上的每一跳都连续发包，统计每一跳的丢包率和延迟。</p>
+<p>Linux 上安装后这样运行，Windows 可以用图形界面的 WinMTR：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D"># -r 输出报告，-w 显示完整主机名，-c 每一跳发 100 个包</span></span>
+<span class="line"><span style="color:#B392F0">mtr</span><span style="color:#79B8FF"> -rwc</span><span style="color:#79B8FF"> 100</span><span style="color:#9ECBFF"> 你的VPS地址</span></span></code></pre>
+<p>下面是从上海电信追踪搬瓦工洛杉矶 DC9（CN2 GIA）的 MTR 结果：</p>
+<p><img src="/_astro/bandwagonhost-dc9-shanghai-outbound-mtr.D7nsHEeF_ZHXkFt.webp" alt="从上海电信出口追踪搬瓦工洛杉矶 DC9 的 MTR 结果，中间多跳丢包 80% 到 95%，终点丢包 0%" loading="lazy" decoding="async" width="1321" height="523"></p>
+<p>Loss% 一列是每一跳的丢包率。第 12 到 14 跳的 <code>59.43</code> 节点，丢包率高达 80% 到 85%，第 1、5 跳甚至 95%。可是最后一行，也就是 VPS 本身，丢包率是 0%。</p>
+<p>这并不是线路有问题。很多路由器会限制回应探测包的速度，它们只是不理会 MTR，真正的数据照样转发。</p>
+<aside class="note note-tip" role="note" data-astro-cid-2nmadbt7><p class="note-title" data-astro-cid-2nmadbt7>怎么看 MTR 的丢包</p>先看最后一行。终点丢包是 0，中间跳的丢包是限速造成的，不用管。只有从某一跳开始一直到终点都在丢，问题才出在那一跳附近。</aside>
+<p>找到开始丢包的那一跳后，再看它的 IP 属于谁：<code>202.97</code> 开头是电信 163 骨干网的国际节点，<code>59.43</code> 开头是 CN2，海外运营商的 IP 说明已经出了国。</p>
+<p>怎么从路由里认出这些节点，可以看<a href="/posts/how-to-check-cn2-gia-route/">怎么判断 VPS 是不是 CN2 GIA</a>。</p>
+<p>还要注意方向。从国内 ping VPS，测的是去和回两程，丢包可能只发生在其中一程。要分清楚，就在 VPS 上再跑一次 MTR，追踪回你家的 IP。</p>
+<h2 id="最常见的原因晚高峰跨境线路拥堵">最常见的原因：晚高峰跨境线路拥堵</h2>
+<p>大多数家庭宽带访问海外，走的是运营商的普通国际线路，电信就是 163 骨干网。国际出口是所有用户共享的，晚上大家都在上网，出口一挤，延迟升高，接着开始丢包。</p>
+<p>这就是海外 VPS“白天好、晚上卡”的主要原因，原理在 <a href="/posts/what-is-cn2-gia/">CN2 GIA 是什么</a>里有更详细的解释。</p>
+<p>两种线路差多少，看实测最直观。下面是两台美国西海岸机器的对比：Vultr 西雅图走普通线路，搬瓦工洛杉矶 DC9 走 CN2 GIA。用 ping.pe 从国内 12 个节点各 ping 100 次：</p>
+<p><img src="/_astro/vultr-seattle-pingpe-loss.3_MvKOHd_Z1GxImq.webp" alt="Vultr 西雅图普通线路在 ping.pe 国内 12 个节点的丢包测试，多数节点丢包 1% 到 7%" loading="lazy" decoding="async" width="1024" height="271"></p>
+<p><img src="/_astro/bandwagonhost-dc9-pingpe-loss.BaFY8Lig_Z1M6igo.webp" alt="搬瓦工洛杉矶 DC9 CN2 GIA 在 ping.pe 国内 12 个节点的丢包测试，只有 1 个节点丢包 1%" loading="lazy" decoding="async" width="1024" height="299"></p>
+<p>两组数据整理如下：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-wrap"><table><thead><tr><th>机器</th><th>线路</th><th>国内 12 个节点丢包</th><th>延迟波动（最大标准差）</th></tr></thead><tbody><tr><td>Vultr 西雅图</td><td>普通线路</td><td>0%～7%，多数 1%～5%</td><td>21.36 ms</td></tr><tr><td>搬瓦工洛杉矶 DC9</td><td>CN2 GIA</td><td>1 个节点 1%，其余 0%</td><td>3.45 ms</td></tr></tbody></table></div>
+<p>西雅图离国内比洛杉矶略远，延迟本来就会高一些，所以这里只比丢包和波动。普通线路的丢包已经摸到 4% 这条线，延迟还忽高忽低；CN2 GIA 几乎零丢包。</p>
+<p>下面这组是晚上 8 点测的，搬瓦工纽约 USNY_6，普通线路：</p>
+<p><img src="/_astro/bandwagonhost-ny-usny6-pingpe-loss.B1pgsy14_2gxoSO.webp" alt="ping.pe 国内 13 个节点在晚上 8 点各 ping 搬瓦工纽约普通线路 100 次，丢包率 0% 到 20%" loading="lazy" decoding="async" width="1024" height="294"></p>
+<p>13 个节点各 ping 100 次，只有 2 个没丢包，广州腾讯丢了 20%，江苏移动 13%。右侧的延迟曲线上布满了红色的丢包标记，打开网页、远程登录时都会感觉到卡顿。</p>
+<p>按我长期使用的经验，CN2 GIA 这类优化线路到了晚高峰，丢包依旧稳定，延迟只上升几毫秒。</p>
+<h2 id="vps-丢包率高怎么办按原因对症处理">VPS 丢包率高怎么办：按原因对症处理</h2>
+<p>查清楚丢在哪一段，办法就很明确了：</p>
+<ul>
+<li>本地网络：改用有线，重启光猫和路由器</li>
+<li>国内个别地区：多半是运营商临时故障，等恢复</li>
+<li>海外机房：发工单附上 MTR 结果，持续就换机房</li>
+<li>跨境拥堵：调参数解决不了，只能换线路</li>
+</ul>
+<p>机房的问题，商家通常比你更早知道。工单里附上 MTR 截图和测试时间，处理起来快得多；如果几天都没改善，趁退款期还在，直接换机房或换商家。</p>
+<p>跨境拥堵是最常见、也最难自己解决的一种。拥堵发生在运营商的国际出口，VPS 上怎么调都碰不到它。</p>
+<h3 id="开-bbr-能解决丢包吗">开 BBR 能解决丢包吗</h3>
+<p>不能。BBR 保障的是网速，不是丢包。</p>
+<p>BBR 是 Google 提出的 TCP 拥塞控制算法，Linux 从 4.9 版内核起自带，多数系统默认没有启用。默认的 CUBIC 算法一遇到丢包就大幅降速，BBR 不会这样，它在丢包的线路上也尽量保持发送速度。</p>
+<p>它解决的是降速，不是丢包。</p>
+<p>打个通俗的比方：丢包率 10%，要送到 100 个包，就发 200 个，靠加量保证 100 个都能送到。实际原理不是简单地重复发送，但效果类似：下载和打开网页会快一些，线路上的丢包一点也没少。</p>
+<p>所以开了 BBR，下载可能变快，SSH 照样会卡，语音视频照样会断。普通线路的机器可以开，但别指望它解决晚高峰的丢包。</p>
+<h2 id="要换线路怎么挑一台晚高峰也稳的-vps">要换线路，怎么挑一台晚高峰也稳的 VPS</h2>
+<p>换线路，就是让跨境这一段不走拥挤的普通线路。电信用户看 CN2 GIA；联通、移动用户要看商家是不是三网优化，只优化电信的机器，联通、移动走的还是普通线路。</p>
+<p>买之前，先拿商家的测试 IP 在晚上测丢包。买之后，在 VPS 上复查回程路由，结果和宣传对不上，就在退款期内退掉。</p>
+<p>搬瓦工的 CN2 GIA 机房最多，洛杉矶 DC9 和香港的实测丢包都接近 0。DC9 所在的系列，官方写的是电信 CN2 GIA、移动 CMIN2、联通 Premium，三网都有优化。</p>
+<p>套餐和价格可以到<a href="/go/bandwagonhost/" rel="sponsored nofollow noopener" target="_blank">搬瓦工官网</a>查看，各机房的测试 IP 和实测结果整理在<a href="/posts/bandwagonhost-cn2-gia-test/">搬瓦工 CN2 GIA 测试</a>里。</p>
+<p>想多一个选择，可以看 DMIT。它在洛杉矶、香港、日本都有 CN2 GIA，三网都有优化线路。测试 IP 见 <a href="/posts/dmit-test-ip/">DMIT 测试 IP 汇总</a>，套餐在 <a href="/go/dmit/" rel="sponsored nofollow noopener" target="_blank">DMIT 官网</a>。</p>
+<p>预算有限的，HostDare 便宜很多，但只有回程走 CN2 GIA，去程是普通线路。实测丢包有波动，部分节点到了 11% 到 17%。</p>
+<p>日常用得下去，对稳定性要求高就不合适，细节见 <a href="/posts/hostdare-cn2-gia-review/">HostDare CN2 GIA 评测</a>。</p>
+<h2 id="总结先定位再对症跨境拥堵就换线路">总结：先定位，再对症，跨境拥堵就换线路</h2>
+<p>VPS 丢包，先确认是真丢包：ping 够 100 次、用多点工具、晚上再测一次。再按本地、国内、跨境、机房四段定位，用 MTR 看最后一行。</p>
+<p>本地和机房的问题各有办法；晚上全国一起丢，就是跨境拥堵，只能换 CN2 GIA 这类优化线路，BBR 只能让网速好看一点。</p>
+<p>买之前，先拿测试 IP 在晚上测一遍丢包，再学会<a href="/posts/how-to-check-cn2-gia-route/">怎么判断 VPS 是不是 CN2 GIA</a>，确认买到的是真线路。</p>
+<div class="cta cta-summary"><p class="cta-eyebrow">搬瓦工</p><p class="cta-title">想要丢包低、波动小：看搬瓦工洛杉矶 DC9</p><p class="cta-desc">电信 CN2 GIA，移动、联通也走优化线路，实测国内节点几乎零丢包。</p><ul class="cta-points"><li>电信 CN2 GIA、移动 CMIN2、联通 Premium</li><li>实测 12 个国内节点只有 1 个丢包 1%</li><li>先拿测试 IP 晚上测一遍再买</li></ul><a class="cta-action" href="/go/bandwagonhost/" rel="sponsored nofollow noopener" target="_blank">去搬瓦工官网看套餐</a><p class="cta-note">联盟链接，通过它购买不会增加你的费用</p></div>
+<h2 id="常见问题">常见问题</h2>
+<h3 id="vps-丢包率多少算正常">VPS 丢包率多少算正常？</h3>
+<p>按我的经验，4% 以内日常建站和远程登录都能用；在线交易、实时语音视频这类对稳定性要求高的业务，应该接近 0。CN2 GIA 这类优化线路可以做到。</p>
+<h3 id="延迟高和丢包有什么区别">延迟高和丢包有什么区别？</h3>
+<p>延迟是数据走一趟要多久，主要由距离决定。丢包是数据在路上丢了，要重新发送，或者干脆丢失。延迟高只是慢，丢包会让速度忽快忽慢、操作一卡一卡，体验往往更差。</p>
+<h3 id="为什么白天不丢包晚上丢包严重">为什么白天不丢包，晚上丢包严重？</h3>
+<p>多半是晚高峰跨境线路拥堵。晚上八点到十一点用网的人最多，普通国际线路的出口被挤满，就开始丢包。CN2 GIA 这类优化线路不和普通流量共用出口，晚上也比较稳。</p>
+<h3 id="mtr-中间节点丢包率很高是线路有问题吗">MTR 中间节点丢包率很高，是线路有问题吗？</h3>
+<p>只要终点那一行不丢包，就不是问题。很多路由器会限制回应探测包的速度，中间跳显示 80% 甚至 95% 的丢包都很常见，真正的数据照样转发。</p>
+<h3 id="开了-bbr-还丢包是-bbr-没生效吗">开了 BBR 还丢包，是 BBR 没生效吗？</h3>
+<p>不是。BBR 改善的是丢包时的传输速度，不会减少线路上的丢包。用 <code>sysctl net.ipv4.tcp_congestion_control</code> 能看到当前用的是不是 bbr，是的话就已经生效了。</p>
+<h3 id="cn2-gia-会完全不丢包吗">CN2 GIA 会完全不丢包吗？</h3>
+<p>不能保证绝对为零。上面的实测中，搬瓦工洛杉矶 DC9 也有 1 个节点丢了 1%。按我长期使用的经验，CN2 GIA 这类线路到了晚高峰，丢包依旧接近 0，这一点普通线路很难做到。</p>
+<h3 id="ping-不丢包但网站打开很慢是怎么回事">ping 不丢包，但网站打开很慢是怎么回事？</h3>
+<p>丢包只是原因之一。带宽太小、服务器负载太高、网站本身没做缓存，都会让网页打开慢。先在 VPS 上看 CPU 和内存占用，再测带宽，排除了这些再看线路。</p></div><section class="related"><h2 class="section-title">相关文章</h2><ul class="post-list"><li><a class="post-list-title" href="/posts/vps-latency/">VPS 延迟多少算正常？按机房所在地对照，再看线路有没有绕路</a><p class="post-list-desc">VPS 延迟多少算正常？先看机房在哪：香港几十毫秒，美西 160ms 左右都属正常。按距离算出理论下限，再和实测对比，就能看出是距离造成的还是线路绕路，附普通线路和 CN2 GIA 的实测。</p><p class="meta"><time datetime="2026-10-31T00:00:00.000Z">2026年10月31日</time></p></li></ul></section></article></div><aside class="sidebar"><section class="widget"><h2 class="widget-title">推荐文章</h2><ol class="widget-list widget-ranked"><li><a href="/posts/what-is-cn2-gia/" title="CN2 GIA 是什么？电信高端线路为什么晚高峰也稳">CN2 GIA 是什么？电信高端线路为什么晚高峰也稳</a></li><li><a href="/posts/dmit-review/" title="DMIT 评测：Premium、Eyeball、Tier 1 怎么选，附洛杉矶去回程实测">DMIT 评测：Premium、Eyeball、Tier 1 怎么选，附洛杉矶去回程实测</a></li><li><a href="/posts/bandwagonhost-cn2-gia/" title="搬瓦工 CN2 GIA 套餐总览：哪些机房才是 CN2 GIA，各系列多少钱">搬瓦工 CN2 GIA 套餐总览：哪些机房才是 CN2 GIA，各系列多少钱</a></li></ol></section><nav class="widget toc toc-side" aria-label="目录"><h2 class="widget-title">目录</h2><ul><li class="toc-depth-2"><a href="#先确认是真的丢包还是测得不对">先确认：是真的丢包，还是测得不对</a></li><li class="toc-depth-3"><a href="#丢包率多少算正常">丢包率多少算正常</a></li><li class="toc-depth-2"><a href="#丢包出在哪一段本地国内跨境机房">丢包出在哪一段：本地、国内、跨境、机房</a></li><li class="toc-depth-2"><a href="#用-mtr-找出丢包的那一跳">用 MTR 找出丢包的那一跳</a></li><li class="toc-depth-2"><a href="#最常见的原因晚高峰跨境线路拥堵">最常见的原因：晚高峰跨境线路拥堵</a></li><li class="toc-depth-2"><a href="#vps-丢包率高怎么办按原因对症处理">VPS 丢包率高怎么办：按原因对症处理</a></li><li class="toc-depth-3"><a href="#开-bbr-能解决丢包吗">开 BBR 能解决丢包吗</a></li><li class="toc-depth-2"><a href="#要换线路怎么挑一台晚高峰也稳的-vps">要换线路，怎么挑一台晚高峰也稳的 VPS</a></li><li class="toc-depth-2"><a href="#总结先定位再对症跨境拥堵就换线路">总结：先定位，再对症，跨境拥堵就换线路</a></li><li class="toc-depth-2"><a href="#常见问题">常见问题</a></li><li class="toc-depth-3"><a href="#vps-丢包率多少算正常">VPS 丢包率多少算正常？</a></li><li class="toc-depth-3"><a href="#延迟高和丢包有什么区别">延迟高和丢包有什么区别？</a></li><li class="toc-depth-3"><a href="#为什么白天不丢包晚上丢包严重">为什么白天不丢包，晚上丢包严重？</a></li><li class="toc-depth-3"><a href="#mtr-中间节点丢包率很高是线路有问题吗">MTR 中间节点丢包率很高，是线路有问题吗？</a></li><li class="toc-depth-3"><a href="#开了-bbr-还丢包是-bbr-没生效吗">开了 BBR 还丢包，是 BBR 没生效吗？</a></li><li class="toc-depth-3"><a href="#cn2-gia-会完全不丢包吗">CN2 GIA 会完全不丢包吗？</a></li><li class="toc-depth-3"><a href="#ping-不丢包但网站打开很慢是怎么回事">ping 不丢包，但网站打开很慢是怎么回事？</a></li></ul></nav></aside></div></main><footer class="site-footer"><div class="container site-footer-inner"><nav aria-label="页脚导航"><a href="/archive/">全部文章</a><a href="/about/">关于</a><a href="/disclosure/">联盟披露</a><a href="/rss.xml">RSS</a></nav><p>© 2026 CN2 GIA VPS 指南。本站部分链接为联盟链接，通过它们购买不会增加你的费用。</p></div></footer><button class="back-to-top" id="back-to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button><script type="module">var e=document.getElementById(`site-header`),t=document.getElementById(`back-to-top`),n=window.scrollY;function r(){let r=window.scrollY;Math.abs(r-n)>4&&(e.classList.toggle(`is-hidden`,r>n&&r>120),n=r),e.classList.toggle(`is-scrolled`,r>8),t.classList.toggle(`is-visible`,r>300)}window.addEventListener(`scroll`,r,{passive:!0}),t.addEventListener(`click`,()=>window.scrollTo({top:0,behavior:`smooth`})),r();</script></body></html>

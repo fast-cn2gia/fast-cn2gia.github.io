@@ -1,0 +1,164 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>VPS 延迟多少算正常？按机房所在地对照，再看线路有没有绕路 | CN2 GIA VPS 指南</title><meta name="description" content="VPS 延迟多少算正常？先看机房在哪：香港几十毫秒，美西 160ms 左右都属正常。按距离算出理论下限，再和实测对比，就能看出是距离造成的还是线路绕路，附普通线路和 CN2 GIA 的实测。"><link rel="canonical" href="https://fast-cn2gia.github.io/posts/vps-latency/"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="alternate" type="application/rss+xml" title="CN2 GIA VPS 指南" href="/rss.xml"><link rel="sitemap" href="/sitemap-index.xml"><meta property="og:type" content="article"><meta property="og:site_name" content="CN2 GIA VPS 指南"><meta property="og:title" content="VPS 延迟多少算正常？按机房所在地对照，再看线路有没有绕路"><meta property="og:description" content="VPS 延迟多少算正常？先看机房在哪：香港几十毫秒，美西 160ms 左右都属正常。按距离算出理论下限，再和实测对比，就能看出是距离造成的还是线路绕路，附普通线路和 CN2 GIA 的实测。"><meta property="og:url" content="https://fast-cn2gia.github.io/posts/vps-latency/"><meta property="og:locale" content="zh_CN"><meta name="twitter:card" content="summary"><script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"VPS 延迟多少算正常？按机房所在地对照，再看线路有没有绕路","description":"VPS 延迟多少算正常？先看机房在哪：香港几十毫秒，美西 160ms 左右都属正常。按距离算出理论下限，再和实测对比，就能看出是距离造成的还是线路绕路，附普通线路和 CN2 GIA 的实测。","datePublished":"2026-10-31T00:00:00.000Z","dateModified":"2026-10-31T00:00:00.000Z","author":{"@type":"Person","name":"站长"},"publisher":{"@type":"Organization","name":"CN2 GIA VPS 指南"},"mainEntityOfPage":"https://fast-cn2gia.github.io/posts/vps-latency/","inLanguage":"zh-CN"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://fast-cn2gia.github.io/"},{"@type":"ListItem","position":2,"name":"网络问题","item":"https://fast-cn2gia.github.io/category/problems/"},{"@type":"ListItem","position":3,"name":"VPS 延迟多少算正常？按机房所在地对照，再看线路有没有绕路","item":"https://fast-cn2gia.github.io/posts/vps-latency/"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"ping 值多少算正常？","acceptedAnswer":{"@type":"Answer","text":"要看测的是哪里的机器。国内到香港几十毫秒，到美国西海岸 160ms 左右，都算正常。东京、新加坡的理论下限约 18ms、38ms，实际多少要拿测试 IP 自己测。用统一的标尺，会把正常的美国机房误判为差。"}},{"@type":"Question","name":"美国 VPS 延迟多少正常？","acceptedAnswer":{"@type":"Answer","text":"美西洛杉矶的 CN2 GIA 机器，国内平均在 160～170ms；我测的西雅图普通线路是 219ms。美东更远，理论下限就有约 120ms。说美国 VPS 能做到 50ms 的，多半是测错了对象。"}},{"@type":"Question","name":"香港 VPS 延迟一般多少？","acceptedAnswer":{"@type":"Answer","text":"我测过两台香港 CN2 GIA 机器：一台 Tcptest 全国平均 61ms，另一台搬瓦工 HK8 在 ping.pe 国内 13 个节点上平均 12～56ms。离得近不代表线路就好，还要看三网是否均衡和晚上的表现。"}},{"@type":"Question","name":"为什么电信、联通、移动测出来的延迟差很多？","acceptedAnswer":{"@type":"Answer","text":"三家运营商各有各的国际出口，同一台机器到三家走的路可能完全不同。上文西雅图那台，联通平均 275ms，比电信慢了约 70ms。三网都有优化的线路，三家的延迟才会接近。"}},{"@type":"Question","name":"网络抖动多少算正常？","acceptedAnswer":{"@type":"Answer","text":"ping.pe 连续 ping 100 次，标准差在几毫秒以内，用起来就很稳。本文几台机器里，CN2 GIA 的标准差最高分别只有 0.73ms 和 3.45ms，西雅图普通线路最高到了 21.36ms。"}},{"@type":"Question","name":"用测试 IP 测出来的延迟，和买到的机器一样吗？","acceptedAnswer":{"@type":"Answer","text":"同一个机房、同一条产品线，线路基本一致，延迟和丢包会有小幅差异。所以测试 IP 适合在买之前判断线路好坏，买到之后，商家有退款期的话，在退款期内再测一遍自己的机器。"}},{"@type":"Question","name":"延迟和丢包有什么区别？","acceptedAnswer":{"@type":"Answer","text":"延迟是数据来回一趟要多久，丢包是有多少数据没送到。延迟高只是慢，丢包会让连接断断续续，对体验的影响往往更大。两个指标要一起看，用 ping.pe 测一次就能同时得到。"}}]}</script><style>.note[data-astro-cid-2nmadbt7]{border-left:4px solid var(--note-accent);background:var(--note-bg);border-radius:0 6px 6px 0;margin:1.5em 0;padding:.75em 1em;font-size:.88em;line-height:1.7}.note-tip[data-astro-cid-2nmadbt7]{--note-accent:#7a93ac;--note-bg:#7a93ac1a}.note-warning[data-astro-cid-2nmadbt7]{--note-accent:#d9a21b;--note-bg:#d9a21b1a}.note-title[data-astro-cid-2nmadbt7]{margin:0 0 .25em;font-weight:600}.note[data-astro-cid-2nmadbt7] p{margin:0}.note[data-astro-cid-2nmadbt7] p+p{margin-top:.5em}
+</style><link rel="stylesheet" href="/_astro/Base.BEzORkuK.css"></head><body><header class="site-header" id="site-header"><div class="container site-header-inner"><a class="site-name" href="/"><svg class="site-logo" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="currentColor"></rect><path d="M8 21h16M8 16h10M8 11h16" stroke="#fff" stroke-width="2.5" stroke-linecap="round"></path></svg>CN2 GIA VPS 指南</a><nav class="site-nav" aria-label="主导航"><a href="/category/basics/">基础知识</a><a href="/category/problems/" aria-current="page">网络问题</a><a href="/category/tutorial/">教程</a><a href="/category/review/">评测</a><a href="/category/recommend/">推荐</a></nav></div></header><main class="container"><div class="layout"><div class="layout-main"><article class="post"><nav class="breadcrumb" aria-label="面包屑"><a href="/">首页</a><span aria-hidden="true">/</span><a href="/category/problems/">网络问题</a></nav><h1>VPS 延迟多少算正常？按机房所在地对照，再看线路有没有绕路</h1><p class="meta"><span>站长</span><time datetime="2026-10-31T00:00:00.000Z">发布于 2026年10月31日</time></p><details class="toc toc-inline"><summary>目录</summary><ul><li class="toc-depth-2"><a href="#vps-延迟多少算正常先看机房在哪">VPS 延迟多少算正常：先看机房在哪</a></li><li class="toc-depth-2"><a href="#延迟是怎么来的距离定下限线路决定多出多少">延迟是怎么来的：距离定下限，线路决定多出多少</a></li><li class="toc-depth-2"><a href="#同在美西普通线路比-cn2-gia-慢-55ms">同在美西，普通线路比 CN2 GIA 慢 55ms</a></li><li class="toc-depth-2"><a href="#比平均延迟更要紧的抖动和晚高峰">比平均延迟更要紧的：抖动和晚高峰</a></li><li class="toc-depth-3"><a href="#网络抖动是什么">网络抖动是什么</a></li><li class="toc-depth-3"><a href="#晚上再测一次">晚上再测一次</a></li><li class="toc-depth-2"><a href="#怎么判断你测到的延迟正不正常">怎么判断你测到的延迟正不正常</a></li><li class="toc-depth-2"><a href="#延迟高怎么办换更近的机房还是换线路">延迟高怎么办：换更近的机房，还是换线路</a></li><li class="toc-depth-2"><a href="#总结先看距离再看线路">总结：先看距离，再看线路</a></li><li class="toc-depth-2"><a href="#常见问题">常见问题</a></li><li class="toc-depth-3"><a href="#ping-值多少算正常">ping 值多少算正常？</a></li><li class="toc-depth-3"><a href="#美国-vps-延迟多少正常">美国 VPS 延迟多少正常？</a></li><li class="toc-depth-3"><a href="#香港-vps-延迟一般多少">香港 VPS 延迟一般多少？</a></li><li class="toc-depth-3"><a href="#为什么电信联通移动测出来的延迟差很多">为什么电信、联通、移动测出来的延迟差很多？</a></li><li class="toc-depth-3"><a href="#网络抖动多少算正常">网络抖动多少算正常？</a></li><li class="toc-depth-3"><a href="#用测试-ip-测出来的延迟和买到的机器一样吗">用测试 IP 测出来的延迟，和买到的机器一样吗？</a></li><li class="toc-depth-3"><a href="#延迟和丢包有什么区别">延迟和丢包有什么区别？</a></li></ul></details><div class="prose"><p>VPS 延迟多少算正常？没有统一的及格线，要按机房所在地看。从国内到香港几十毫秒，到美国西海岸 160ms 左右，都是正常水平。</p>
+<p>判断好坏，看的是它比距离决定的下限高出多少，三网差距大不大，以及晚上会不会忽高忽低。</p>
+<p>网上常说“100ms 以内才算好”。</p>
+<p>按这把尺子量，美国机房全都不及格。可从上海到洛杉矶，光在光纤里跑一个来回就要约 100ms，再好的线路也低不过这个数。下面先给参考值，再讲怎么判断是距离还是线路的原因。</p>
+<h2 id="vps-延迟多少算正常先看机房在哪">VPS 延迟多少算正常：先看机房在哪</h2>
+<p>下表是各地区机房到上海的直线距离、按距离算出的理论最低往返延迟，以及本站实测过的机器。距离是按经纬度算的球面距离，实际的海缆和路由只会更长。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-wrap"><table><thead><tr><th>机房所在地</th><th>到上海距离</th><th>理论最低往返</th><th>本站实测（国内平均）</th></tr></thead><tbody><tr><td>香港</td><td>约 1230 公里</td><td>约 12ms</td><td>61ms（CN2 GIA）</td></tr><tr><td>大阪</td><td>约 1360 公里</td><td>约 14ms</td><td>没有实测</td></tr><tr><td>东京</td><td>约 1760 公里</td><td>约 18ms</td><td>没有实测</td></tr><tr><td>新加坡</td><td>约 3810 公里</td><td>约 38ms</td><td>没有实测</td></tr><tr><td>法兰克福</td><td>约 8820 公里</td><td>约 88ms</td><td>没有实测</td></tr><tr><td>西雅图</td><td>约 9190 公里</td><td>约 92ms</td><td>219ms（普通线路）</td></tr><tr><td>洛杉矶</td><td>约 10440 公里</td><td>约 104ms</td><td>161～168ms（优化线路）</td></tr><tr><td>纽约</td><td>约 11860 公里</td><td>约 119ms</td><td>229ms（普通线路，晚上 8 点）</td></tr></tbody></table></div>
+<p>所以美国 VPS 测出 160ms 并不慢，测出 50ms 反而说明测错了对象。</p>
+<p>没有实测的地区，我只写了理论下限，不编“正常范围”。这些地区的商家大多提供测试 IP，买之前自己测一遍最可靠，方法见 <a href="/posts/vps-speed-test/">VPS 测速教程</a>。</p>
+<h2 id="延迟是怎么来的距离定下限线路决定多出多少">延迟是怎么来的：距离定下限，线路决定多出多少</h2>
+<p><code>ping</code> 测的是往返时间：数据包从你的电脑出发，到达 VPS，再回到你手上。光在光纤里的速度约为每秒 20 万公里，换算下来，每 100 公里的距离，往返至少要 1ms。</p>
+<p>这是物理下限，任何线路都绕不过去。</p>
+<p>实际测出来的值总会比下限高。海缆不是沿直线铺的，数据还要经过一路的路由器，每一跳都要排队、转发。线路质量差一点，或者在别的国家绕一圈再回来，延迟就会多出几十甚至上百毫秒。</p>
+<p>下面是从国内电信追踪洛杉矶一台 CN2 GIA 机器的去程路由。</p>
+<p><img src="/_astro/cn2-gia-outbound-itdog-traceroute.WjAzjFYy_Z2hUQlm.webp" alt="从国内电信追踪洛杉矶 CN2 GIA 机器的去程路由，跨太平洋那一跳延迟升到 140ms 左右" loading="lazy" decoding="async" width="1024" height="379"></p>
+<p>前面几跳还在国内，跨太平洋那一跳一下子升到 140ms 左右，延迟的大头就在这里。怎么从路由里认出 CN2 GIA，可以看<a href="/posts/how-to-check-cn2-gia-route/">怎么判断 VPS 是不是 CN2 GIA</a>。</p>
+<h2 id="同在美西普通线路比-cn2-gia-慢-55ms">同在美西，普通线路比 CN2 GIA 慢 55ms</h2>
+<p>距离只定下限，线路才决定实际多出多少。用两台美国西海岸的机器对比最直观：Vultr 西雅图走普通线路，搬瓦工洛杉矶 DC9 走 CN2 GIA，都用 ITDOG 测全国三百多个节点。</p>
+<p><img src="/_astro/vultr-seattle-itdog-ping.DotwxI6V_ZGApnr.webp" alt="Vultr 西雅图普通线路的 ITDOG 全国 ping 测试，全国平均延迟 219ms" loading="lazy" decoding="async" width="1024" height="458"></p>
+<p>再看搬瓦工洛杉矶 DC9。</p>
+<p><img src="/_astro/bandwagonhost-dc9-itdog-ping.By4s3rfW_26OOlN.webp" alt="搬瓦工洛杉矶 DC9 CN2 GIA 的 ITDOG 全国 ping 测试，全国平均延迟 164ms" loading="lazy" decoding="async" width="1024" height="458"></p>
+<p>两张图的关键数字整理如下：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-wrap"><table><thead><tr><th>指标</th><th>Vultr 西雅图（普通线路）</th><th>搬瓦工洛杉矶 DC9（CN2 GIA）</th></tr></thead><tbody><tr><td>全国平均</td><td>219ms</td><td>164ms</td></tr><tr><td>电信 / 联通 / 移动</td><td>208 / 275 / 188ms</td><td>163 / 166 / 167ms</td></tr><tr><td>最慢节点</td><td>408ms（山东日照联通）</td><td>217ms（新疆博州联通）</td></tr></tbody></table></div>
+<p>注意，西雅图离上海比洛杉矶还近约 1250 公里，理论下限低 12ms 左右。</p>
+<p>距离更近，平均延迟反而高出 55ms，多出来的部分主要来自线路。差距最大的是联通：普通线路平均 275ms，比电信、移动都慢得多；CN2 GIA 这边三网都在 165ms 左右，几乎没有差别。</p>
+<p>这不是个例。我测过的另外两台洛杉矶机器，DMIT 洛杉矶 Pro 平均 161ms，HostDare 168ms，都比下限高出约 60ms。普通线路为什么慢，见 <a href="/posts/what-is-cn2-gia/">CN2 GIA 是什么</a>。</p>
+<h2 id="比平均延迟更要紧的抖动和晚高峰">比平均延迟更要紧的：抖动和晚高峰</h2>
+<p>平均延迟只是一个数字。</p>
+<p>实际用起来，更影响体验的是延迟稳不稳。一台平均 160ms、每次都差不多的机器，用起来比平均 140ms、时不时跳到 300ms 的机器舒服得多。</p>
+<h3 id="网络抖动是什么">网络抖动是什么</h3>
+<p>抖动就是延迟忽高忽低，通常用多次 ping 结果的标准差来衡量。标准差越小，每次的延迟越接近。抖动大的时候，SSH 里敲命令一卡一卡，网页时快时慢，视频通话会断断续续。</p>
+<p>ping.pe 连续 ping 多次后会给出标准差。Vultr 西雅图最高 21.36ms，搬瓦工 DC9 最高 3.45ms。DMIT 洛杉矶 Pro 是晚上九点多测的，各 ping 100 次，13 个国内节点的标准差最大只有 0.73ms。</p>
+<h3 id="晚上再测一次">晚上再测一次</h3>
+<p>白天测得好，不等于晚上也好。</p>
+<p>晚上是国内用户上网的高峰，普通国际线路容易拥堵，所以建议买之前在晚上再测一次。搬瓦工纽约 USNY_6 是普通线路，晚上 8 点测的结果是全国平均 229ms，比理论下限高出一百多毫秒。</p>
+<p>按我使用的经验，CN2 GIA 这类优化线路到了晚高峰，延迟只上升几毫秒。</p>
+<aside class="note note-tip" role="note" data-astro-cid-2nmadbt7><p class="note-title" data-astro-cid-2nmadbt7>看延迟，别只看平均值</p>平均延迟低不代表稳定。同时看标准差和晚上的结果：标准差在几毫秒以内、晚上和白天差不多，才说明线路靠得住。</aside>
+<h2 id="怎么判断你测到的延迟正不正常">怎么判断你测到的延迟正不正常</h2>
+<p>拿到一台 VPS 或者一个测试 IP，可以按下面的顺序判断：</p>
+<ol>
+<li>用 ITDOG 或 ping.pe 测一遍国内三网</li>
+<li>对照第一节的表，看比理论下限高出多少</li>
+<li>比较电信、联通、移动三家的平均值</li>
+<li>看 ping.pe 给出的标准差大不大</li>
+<li>晚上再测一次，和白天对比</li>
+<li>高出很多时做路由追踪，看去程走的哪条线</li>
+</ol>
+<p>第二步最关键。以美西为例，比下限高出 60ms 左右算正常；整体高出一百多毫秒，线路可能不是优化线路；某一家明显比另外两家慢，可能是那一家没走优化线路。</p>
+<p>电信用户看路由追踪：<code>59.43</code> 开头的是 CN2 节点，<code>202.97</code> 开头的是普通的 163 骨干网，关键看 CN2 节点之后有没有交给 <code>202.97</code>。具体的命令和读法见 <a href="/posts/vps-speed-test/">VPS 测速教程</a>和<a href="/posts/how-to-check-cn2-gia-route/">怎么判断 VPS 是不是 CN2 GIA</a>。</p>
+<h2 id="延迟高怎么办换更近的机房还是换线路">延迟高怎么办：换更近的机房，还是换线路</h2>
+<p>延迟高出下限很多，有两条路可以走。</p>
+<p>一是换更近的机房。香港离得近，我测过的一台香港 CN2 GIA 机器，Tcptest 全国 116 个节点平均 61ms，最慢的呼和浩特联通是 286ms。代价是价格比美国机房高。</p>
+<p><img src="/_astro/tcptest-china-ping-hk-vps.BALSFxIw_1bBnl8.webp" alt="香港 CN2 GIA 机器的 Tcptest 全国 ping 测试，全国平均延迟 61ms" loading="lazy" decoding="async" width="1024" height="443"></p>
+<p>二是距离不变，换线路。美西的 CN2 GIA 能把延迟压到 160ms 左右，比下限多出约 60ms，是本文几台美国机器里最少的，三网均衡、抖动小，价格也比香港低。</p>
+<p>在我看来，一百来毫秒的差别日常用起来体感不大，稳定比低延迟更重要。</p>
+<p>所以我的建议是：对延迟有硬性要求、预算又充足的，选香港；建站、远程管理这类日常用途，选美西的 CN2 GIA 就够了。</p>
+<p>搬瓦工两种都有：香港 HK_8 国内平均 12～56ms，洛杉矶 DC9 三网平均都在 165ms 左右。各系列和机房在<a href="/posts/bandwagonhost-cn2-gia/">搬瓦工 CN2 GIA 套餐总览</a>里有整理，套餐可以到<a href="/go/bandwagonhost/" rel="sponsored nofollow noopener" target="_blank">搬瓦工官网</a>查看。</p>
+<p>想要抖动尽量小，可以看 DMIT 洛杉矶 Pro，标准差是本文几台机器里最低的。套餐和产品线的区别见 <a href="/posts/dmit-review/">DMIT 评测</a>，购买在 <a href="/go/dmit/" rel="sponsored nofollow noopener" target="_blank">DMIT 官网</a>。</p>
+<p>预算有限的，HostDare 平均延迟和前两家接近，但它只有回程走优化线路，去程是普通线路，丢包有波动，实测数据见 <a href="/posts/hostdare-cn2-gia-review/">HostDare CN2 GIA 评测</a>。</p>
+<h2 id="总结先看距离再看线路">总结：先看距离，再看线路</h2>
+<p>判断 VPS 延迟正不正常，第一步看机房在哪，按距离算出下限：香港十几毫秒，美西一百毫秒左右。第二步看实测比下限多出多少、三网是否均衡、抖动大不大、晚上会不会变慢。</p>
+<p>多出很多，问题在线路，换 CN2 GIA 这类优化线路比换配置有用。</p>
+<p>买之前先拿测试 IP 测一遍三网，晚上再测一次，对照本文的表格判断。搬瓦工各 CN2 GIA 机房的测试 IP，整理在<a href="/posts/bandwagonhost-cn2-gia-test/">搬瓦工 CN2 GIA 测试</a>里。</p>
+<div class="cta cta-summary"><p class="cta-eyebrow">搬瓦工</p><p class="cta-title">要低延迟又要稳：看搬瓦工 CN2 GIA</p><p class="cta-desc">香港机房国内只有几十毫秒；洛杉矶 DC9 三网平均约 165ms，三网均衡、抖动小。</p><ul class="cta-points"><li>香港 HK_8 实测国内平均 12～56ms</li><li>洛杉矶 DC9 电信、联通、移动相差不到 5ms</li><li>先拿测试 IP 晚上测一遍再买</li></ul><a class="cta-action" href="/go/bandwagonhost/" rel="sponsored nofollow noopener" target="_blank">去搬瓦工官网看套餐</a><p class="cta-note">联盟链接，通过它购买不会增加你的费用</p></div>
+<h2 id="常见问题">常见问题</h2>
+<h3 id="ping-值多少算正常">ping 值多少算正常？</h3>
+<p>要看测的是哪里的机器。国内到香港几十毫秒，到美国西海岸 160ms 左右，都算正常。东京、新加坡的理论下限约 18ms、38ms，实际多少要拿测试 IP 自己测。用统一的标尺，会把正常的美国机房误判为差。</p>
+<h3 id="美国-vps-延迟多少正常">美国 VPS 延迟多少正常？</h3>
+<p>美西洛杉矶的 CN2 GIA 机器，国内平均在 160～170ms；我测的西雅图普通线路是 219ms。美东更远，理论下限就有约 120ms。说美国 VPS 能做到 50ms 的，多半是测错了对象。</p>
+<h3 id="香港-vps-延迟一般多少">香港 VPS 延迟一般多少？</h3>
+<p>我测过两台香港 CN2 GIA 机器：一台 Tcptest 全国平均 61ms，另一台搬瓦工 HK_8 在 ping.pe 国内 13 个节点上平均 12～56ms。离得近不代表线路就好，还要看三网是否均衡和晚上的表现。</p>
+<h3 id="为什么电信联通移动测出来的延迟差很多">为什么电信、联通、移动测出来的延迟差很多？</h3>
+<p>三家运营商各有各的国际出口，同一台机器到三家走的路可能完全不同。上文西雅图那台，联通平均 275ms，比电信慢了约 70ms。三网都有优化的线路，三家的延迟才会接近。</p>
+<h3 id="网络抖动多少算正常">网络抖动多少算正常？</h3>
+<p>ping.pe 连续 ping 100 次，标准差在几毫秒以内，用起来就很稳。本文几台机器里，CN2 GIA 的标准差最高分别只有 0.73ms 和 3.45ms，西雅图普通线路最高到了 21.36ms。</p>
+<h3 id="用测试-ip-测出来的延迟和买到的机器一样吗">用测试 IP 测出来的延迟，和买到的机器一样吗？</h3>
+<p>同一个机房、同一条产品线，线路基本一致，延迟和丢包会有小幅差异。所以测试 IP 适合在买之前判断线路好坏，买到之后，商家有退款期的话，在退款期内再测一遍自己的机器。</p>
+<h3 id="延迟和丢包有什么区别">延迟和丢包有什么区别？</h3>
+<p>延迟是数据来回一趟要多久，丢包是有多少数据没送到。延迟高只是慢，丢包会让连接断断续续，对体验的影响往往更大。两个指标要一起看，用 ping.pe 测一次就能同时得到。</p></div><section class="related"><h2 class="section-title">相关文章</h2><ul class="post-list"><li><a class="post-list-title" href="/posts/vps-packet-loss/">VPS 丢包率高怎么办？先查丢在哪一段，再决定要不要换线路</a><p class="post-list-desc">VPS 丢包率高怎么办？先用多点测试和 MTR 查清丢包出在本地、国内、跨境还是机房，再对症处理。附普通线路和 CN2 GIA 的丢包实测对比，讲清什么情况只能换线路，BBR 又能帮多少。</p><p class="meta"><time datetime="2026-10-31T00:00:00.000Z">2026年10月31日</time></p></li></ul></section></article></div><aside class="sidebar"><section class="widget"><h2 class="widget-title">推荐文章</h2><ol class="widget-list widget-ranked"><li><a href="/posts/what-is-cn2-gia/" title="CN2 GIA 是什么？电信高端线路为什么晚高峰也稳">CN2 GIA 是什么？电信高端线路为什么晚高峰也稳</a></li><li><a href="/posts/dmit-review/" title="DMIT 评测：Premium、Eyeball、Tier 1 怎么选，附洛杉矶去回程实测">DMIT 评测：Premium、Eyeball、Tier 1 怎么选，附洛杉矶去回程实测</a></li><li><a href="/posts/bandwagonhost-cn2-gia/" title="搬瓦工 CN2 GIA 套餐总览：哪些机房才是 CN2 GIA，各系列多少钱">搬瓦工 CN2 GIA 套餐总览：哪些机房才是 CN2 GIA，各系列多少钱</a></li></ol></section><nav class="widget toc toc-side" aria-label="目录"><h2 class="widget-title">目录</h2><ul><li class="toc-depth-2"><a href="#vps-延迟多少算正常先看机房在哪">VPS 延迟多少算正常：先看机房在哪</a></li><li class="toc-depth-2"><a href="#延迟是怎么来的距离定下限线路决定多出多少">延迟是怎么来的：距离定下限，线路决定多出多少</a></li><li class="toc-depth-2"><a href="#同在美西普通线路比-cn2-gia-慢-55ms">同在美西，普通线路比 CN2 GIA 慢 55ms</a></li><li class="toc-depth-2"><a href="#比平均延迟更要紧的抖动和晚高峰">比平均延迟更要紧的：抖动和晚高峰</a></li><li class="toc-depth-3"><a href="#网络抖动是什么">网络抖动是什么</a></li><li class="toc-depth-3"><a href="#晚上再测一次">晚上再测一次</a></li><li class="toc-depth-2"><a href="#怎么判断你测到的延迟正不正常">怎么判断你测到的延迟正不正常</a></li><li class="toc-depth-2"><a href="#延迟高怎么办换更近的机房还是换线路">延迟高怎么办：换更近的机房，还是换线路</a></li><li class="toc-depth-2"><a href="#总结先看距离再看线路">总结：先看距离，再看线路</a></li><li class="toc-depth-2"><a href="#常见问题">常见问题</a></li><li class="toc-depth-3"><a href="#ping-值多少算正常">ping 值多少算正常？</a></li><li class="toc-depth-3"><a href="#美国-vps-延迟多少正常">美国 VPS 延迟多少正常？</a></li><li class="toc-depth-3"><a href="#香港-vps-延迟一般多少">香港 VPS 延迟一般多少？</a></li><li class="toc-depth-3"><a href="#为什么电信联通移动测出来的延迟差很多">为什么电信、联通、移动测出来的延迟差很多？</a></li><li class="toc-depth-3"><a href="#网络抖动多少算正常">网络抖动多少算正常？</a></li><li class="toc-depth-3"><a href="#用测试-ip-测出来的延迟和买到的机器一样吗">用测试 IP 测出来的延迟，和买到的机器一样吗？</a></li><li class="toc-depth-3"><a href="#延迟和丢包有什么区别">延迟和丢包有什么区别？</a></li></ul></nav></aside></div></main><footer class="site-footer"><div class="container site-footer-inner"><nav aria-label="页脚导航"><a href="/archive/">全部文章</a><a href="/about/">关于</a><a href="/disclosure/">联盟披露</a><a href="/rss.xml">RSS</a></nav><p>© 2026 CN2 GIA VPS 指南。本站部分链接为联盟链接，通过它们购买不会增加你的费用。</p></div></footer><button class="back-to-top" id="back-to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button><script type="module">var e=document.getElementById(`site-header`),t=document.getElementById(`back-to-top`),n=window.scrollY;function r(){let r=window.scrollY;Math.abs(r-n)>4&&(e.classList.toggle(`is-hidden`,r>n&&r>120),n=r),e.classList.toggle(`is-scrolled`,r>8),t.classList.toggle(`is-visible`,r>300)}window.addEventListener(`scroll`,r,{passive:!0}),t.addEventListener(`click`,()=>window.scrollTo({top:0,behavior:`smooth`})),r();</script></body></html>
