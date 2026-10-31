@@ -1,0 +1,218 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>DMIT 评测：Premium、Eyeball、Tier 1 怎么选，附洛杉矶去回程实测 | CN2 GIA VPS 指南</title><meta name="description" content="DMIT 评测：按官网 2026 年 10 月的价格讲清 Premium（Pro）、Eyeball、Tier 1 三条产品线的区别，附洛杉矶 Premium 的去程、三网回程、延迟和性能实测，以及换 IP、退款规则和不适合谁。"><link rel="canonical" href="https://fast-cn2gia.github.io/posts/dmit-review/"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="alternate" type="application/rss+xml" title="CN2 GIA VPS 指南" href="/rss.xml"><link rel="sitemap" href="/sitemap-index.xml"><meta property="og:type" content="article"><meta property="og:site_name" content="CN2 GIA VPS 指南"><meta property="og:title" content="DMIT 评测：Premium、Eyeball、Tier 1 怎么选，附洛杉矶去回程实测"><meta property="og:description" content="DMIT 评测：按官网 2026 年 10 月的价格讲清 Premium（Pro）、Eyeball、Tier 1 三条产品线的区别，附洛杉矶 Premium 的去程、三网回程、延迟和性能实测，以及换 IP、退款规则和不适合谁。"><meta property="og:url" content="https://fast-cn2gia.github.io/posts/dmit-review/"><meta property="og:locale" content="zh_CN"><meta name="twitter:card" content="summary"><script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"DMIT 评测：Premium、Eyeball、Tier 1 怎么选，附洛杉矶去回程实测","description":"DMIT 评测：按官网 2026 年 10 月的价格讲清 Premium（Pro）、Eyeball、Tier 1 三条产品线的区别，附洛杉矶 Premium 的去程、三网回程、延迟和性能实测，以及换 IP、退款规则和不适合谁。","datePublished":"2026-11-09T00:00:00.000Z","dateModified":"2026-11-09T00:00:00.000Z","author":{"@type":"Person","name":"站长"},"publisher":{"@type":"Organization","name":"CN2 GIA VPS 指南"},"mainEntityOfPage":"https://fast-cn2gia.github.io/posts/dmit-review/","inLanguage":"zh-CN"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://fast-cn2gia.github.io/"},{"@type":"ListItem","position":2,"name":"评测","item":"https://fast-cn2gia.github.io/category/review/"},{"@type":"ListItem","position":3,"name":"DMIT 评测：Premium、Eyeball、Tier 1 怎么选，附洛杉矶去回程实测","item":"https://fast-cn2gia.github.io/posts/dmit-review/"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"DMIT 怎么样，靠谱吗？","acceptedAnswer":{"@type":"Answer","text":"线路是 DMIT 最大的优点，我实测洛杉矶 Premium 三网回程都走 CN2 GIA，丢包很低，价格也便宜。要注意的是库存紧张、退款条件严。"}},{"@type":"Question","name":"DMIT 的线路是 CN2 GIA 吗？","acceptedAnswer":{"@type":"Answer","text":"Premium 是，官方说明包含电信 CN2 GIA，有线路保证。洛杉矶 Eyeball 我实测电信也走 CN2 GIA，但官方只承诺尽力优化。Tier 1 没有针对国内的优化，不是 CN2 GIA。"}},{"@type":"Question","name":"DMIT Pro 和 Premium 是一回事吗？","acceptedAnswer":{"@type":"Answer","text":"是。官网价格页叫 Premium，官方文档里叫 Pro 系列，指的是同一个系列。同样，EB 是 Eyeball，T1 是 Tier 1。"}},{"@type":"Question","name":"DMIT T1 是什么线路，值得买吗？","acceptedAnswer":{"@type":"Answer","text":"T1 是 Tier 1 的简称，走国际线路，没有针对中国大陆的优化，年付 36.90 美元起。访客主要在海外、需要大流量时值得买；主要给国内用，选 Premium 或 Eyeball。"}},{"@type":"Question","name":"DMIT 买了能退款吗？","acceptedAnswer":{"@type":"Answer","text":"能，但有条件。新订单 3 天内、流量不超过 30 GB 可以全额退，30 天内可以部分退。网络不够好、IP 地理位置不在退款范围内，续费订单也不退。"}},{"@type":"Question","name":"DMIT 可以免费换 IP 吗？","acceptedAnswer":{"@type":"Answer","text":"Premium 和 Eyeball 满足购买时长、IP 被封等条件，可以提交工单免费换，具体条件见上文。T1 只能付费换，每次 5 美元。"}},{"@type":"Question","name":"DMIT 的测试 IP 在哪里？","acceptedAnswer":{"@type":"Answer","text":"官方 Looking Glass 上有三个机房各产品线的测试 IP，我整理在 DMIT 测试 IP 里，也写了怎么测去程和回程。"}}]}</script><style>.note[data-astro-cid-2nmadbt7]{border-left:4px solid var(--note-accent);background:var(--note-bg);border-radius:0 6px 6px 0;margin:1.5em 0;padding:.75em 1em;font-size:.88em;line-height:1.7}.note-tip[data-astro-cid-2nmadbt7]{--note-accent:#7a93ac;--note-bg:#7a93ac1a}.note-warning[data-astro-cid-2nmadbt7]{--note-accent:#d9a21b;--note-bg:#d9a21b1a}.note-title[data-astro-cid-2nmadbt7]{margin:0 0 .25em;font-weight:600}.note[data-astro-cid-2nmadbt7] p{margin:0}.note[data-astro-cid-2nmadbt7] p+p{margin-top:.5em}
+</style><link rel="stylesheet" href="/_astro/Base.BEzORkuK.css"></head><body><header class="site-header" id="site-header"><div class="container site-header-inner"><a class="site-name" href="/"><svg class="site-logo" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="currentColor"></rect><path d="M8 21h16M8 16h10M8 11h16" stroke="#fff" stroke-width="2.5" stroke-linecap="round"></path></svg>CN2 GIA VPS 指南</a><nav class="site-nav" aria-label="主导航"><a href="/category/basics/">基础知识</a><a href="/category/tutorial/">教程</a><a href="/category/review/" aria-current="page">评测</a><a href="/category/recommend/">推荐</a></nav></div></header><main class="container"><div class="layout"><div class="layout-main"><article class="post"><nav class="breadcrumb" aria-label="面包屑"><a href="/">首页</a><span aria-hidden="true">/</span><a href="/category/review/">评测</a></nav><h1>DMIT 评测：Premium、Eyeball、Tier 1 怎么选，附洛杉矶去回程实测</h1><p class="meta"><span>站长</span><time datetime="2026-11-09T00:00:00.000Z">发布于 2026年11月9日</time></p><details class="toc toc-inline"><summary>目录</summary><ul><li class="toc-depth-2"><a href="#dmit-是什么自有网络的三网优化商家">DMIT 是什么：自有网络的三网优化商家</a></li><li class="toc-depth-2"><a href="#三条产品线premiumeyeball-和-tier-1-的区别">三条产品线：Premium、Eyeball 和 Tier 1 的区别</a></li><li class="toc-depth-3"><a href="#tier-1-适合谁最便宜但没有中国优化">Tier 1 适合谁：最便宜，但没有中国优化</a></li><li class="toc-depth-2"><a href="#三个机房和起步价洛杉矶最便宜香港最快">三个机房和起步价：洛杉矶最便宜，香港最快</a></li><li class="toc-depth-2"><a href="#洛杉矶-premium-实测三网延迟和丢包">洛杉矶 Premium 实测：三网延迟和丢包</a></li><li class="toc-depth-2"><a href="#去程和回程路由三网回程都走-cn2-gia">去程和回程路由：三网回程都走 CN2 GIA</a></li><li class="toc-depth-2"><a href="#性能和带宽epyc-处理器千兆口基本跑满">性能和带宽：EPYC 处理器，千兆口基本跑满</a></li><li class="toc-depth-2"><a href="#换-ip-和退款买之前要知道的规则">换 IP 和退款：买之前要知道的规则</a></li><li class="toc-depth-2"><a href="#dmit-的缺点和不适合的人">DMIT 的缺点和不适合的人</a></li><li class="toc-depth-2"><a href="#总结入门选-dmit-洛杉矶-premium急用选搬瓦工">总结：入门选 DMIT 洛杉矶 Premium，急用选搬瓦工</a></li><li class="toc-depth-2"><a href="#常见问题">常见问题</a></li><li class="toc-depth-3"><a href="#dmit-怎么样靠谱吗">DMIT 怎么样，靠谱吗？</a></li><li class="toc-depth-3"><a href="#dmit-的线路是-cn2-gia-吗">DMIT 的线路是 CN2 GIA 吗？</a></li><li class="toc-depth-3"><a href="#dmit-pro-和-premium-是一回事吗">DMIT Pro 和 Premium 是一回事吗？</a></li><li class="toc-depth-3"><a href="#dmit-t1-是什么线路值得买吗">DMIT T1 是什么线路，值得买吗？</a></li><li class="toc-depth-3"><a href="#dmit-买了能退款吗">DMIT 买了能退款吗？</a></li><li class="toc-depth-3"><a href="#dmit-可以免费换-ip-吗">DMIT 可以免费换 IP 吗？</a></li><li class="toc-depth-3"><a href="#dmit-的测试-ip-在哪里">DMIT 的测试 IP 在哪里？</a></li></ul></details><div class="prose"><p>这篇 DMIT 评测先说结论：想要三网优化又预算有限，DMIT 洛杉矶 Premium 是入门首选，官网 2026 年 10 月的入门款每月 10.90 美元。我实测它去程三网各走自家的高端线路，回程三网都走 CN2 GIA。</p>
+<p>它的短板是库存紧张、退款条件严，急着用或者希望退款宽松一些，搬瓦工更合适。Tier 1 最便宜，但没有针对国内的线路优化，更适合面向海外的用途。</p>
+<h2 id="dmit-是什么自有网络的三网优化商家">DMIT 是什么：自有网络的三网优化商家</h2>
+<p>DMIT 是一家主营 VPS 的商家，网络是自己的 AS906，机房在洛杉矶、香港和东京，三地都有面向中国大陆优化的 <a href="/posts/what-is-cn2-gia/">CN2 GIA</a> 套餐。我自己用的是洛杉矶 Premium。</p>
+<p>文中的价格、产品线和规则，都是 2026 年 10 月从官网和官方文档逐项抄录的；实测数据来自我自己的这台机器。官网注明价格可能调整，下单前以官网为准。</p>
+<h2 id="三条产品线premiumeyeball-和-tier-1-的区别">三条产品线：Premium、Eyeball 和 Tier 1 的区别</h2>
+<p>DMIT 官网把套餐分成三个网络系列：Premium、Eyeball 和 Tier 1。官方文档里的 Pro 系列就是 Premium，EB 指 Eyeball，T1 指 Tier 1，这几种叫法在网上都很常见。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-wrap"><table><thead><tr><th>系列</th><th>国内优化</th><th>官方说明</th><th>机房</th><th>起步价</th></tr></thead><tbody><tr><td>Premium（Pro）</td><td>有，有线路保证</td><td>含电信 CN2 GIA</td><td>洛杉矶、香港、东京</td><td>$10.90 / 月</td></tr><tr><td>Eyeball（EB）</td><td>有，尽力优化</td><td>经 CMIN2 等国内运营商</td><td>洛杉矶、香港</td><td>$10.90 / 月</td></tr><tr><td>Tier 1（T1）</td><td>没有</td><td>面向海外（亚太、美洲等）</td><td>洛杉矶、香港、东京</td><td>$36.90 / 年</td></tr></tbody></table></div>
+<p>Premium 是最稳妥的选择。官方承诺走优质线路，我在洛杉矶实测去程电信 CN2 GIA、联通 9929 / CUP 转 AS10099、移动 CMIN2，回程三网都走 CN2 GIA。</p>
+<p>Eyeball 在洛杉矶的起步价和 Premium 相同，流量从 1000 GB 加到 1500 GB。我测过它的路由，去程和回程都是电信 CN2 GIA、移动 CMIN2、联通 AS10099，和官网说法一致。</p>
+<p>和 Premium 的差别在回程：联通、移动走的是自家的线路，不是 CN2 GIA。另外官方对 Eyeball 只承诺“尽力优化”，线路以后可能调整，求稳选 Premium，在意流量可以选 Eyeball。</p>
+<p>香港的 Eyeball 还在 Beta，官方暂不建议用于需要高稳定性的生产环境。</p>
+<h3 id="tier-1-适合谁最便宜但没有中国优化">Tier 1 适合谁：最便宜，但没有中国优化</h3>
+<p>Tier 1 是三条产品线里最便宜的，年付 36.90 美元起，月付 6.90 美元起。官方说明它没有针对中国大陆的线路优化，主打大带宽和亚太、美洲之间的线路。</p>
+<p>这意味着从国内访问，晚高峰可能会慢，延迟和丢包都没有保证。官方还注明 T1 的 IP 不保证在所有国家或地区可用，换 IP 也只能付费。</p>
+<p>所以 T1 适合访客主要在海外的网站，或者需要大流量的下载和备份，用在这些地方性价比很高。三个机房的 T1 测试 IP 都列在 <a href="/posts/dmit-test-ip/">DMIT 测试 IP</a> 里，想给国内用，买之前先测一下晚高峰。</p>
+<h2 id="三个机房和起步价洛杉矶最便宜香港最快">三个机房和起步价：洛杉矶最便宜，香港最快</h2>
+<p>三个机房的 Premium 价格差别很大，香港入门款接近洛杉矶的 4 倍。下面是 2026 年 10 月官网各机房 Premium 的入门款，机房后面括号里是官方给出的平均延迟：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-wrap"><table><thead><tr><th>机房</th><th>入门款</th><th>配置</th><th>月流量</th><th>月付</th></tr></thead><tbody><tr><td>洛杉矶</td><td><a href="/go/dmit/253/" rel="sponsored nofollow noopener" target="_blank">AS3 TINY</a></td><td>1 核、2 GB、20 GB</td><td>1000 GB</td><td>$10.90</td></tr><tr><td>东京（约 28 ms）</td><td>TINY</td><td>1 核、1 GB、20 GB</td><td>500 GB</td><td>$21.90</td></tr><tr><td>香港（约 15 ms）</td><td>TINY</td><td>1 核、1 GB、20 GB</td><td>500 GB</td><td>$39.90</td></tr></tbody></table></div>
+<p>洛杉矶最便宜，内存和流量也最多，代价是延迟。</p>
+<p>我实测洛杉矶全国平均 158 ms，东京和香港官方给的分别是约 28 ms 和 15 ms。建站、远程管理这类用途，洛杉矶的延迟够用；打游戏、实时语音这类对延迟敏感的，才值得为东京或香港多花钱。</p>
+<div class="cta cta-box"><div class="cta-body"><p class="cta-title">DMIT 三网优化 VPS</p><p class="cta-desc">洛杉矶、香港、东京都有 Premium 线路，洛杉矶入门款最便宜。</p></div><a class="cta-action" href="/go/dmit/" rel="sponsored nofollow noopener" target="_blank">查看 DMIT 套餐和价格</a></div>
+<p>选洛杉矶还要看硬件平台。官网分 AS3、AN4、AN5 三个平台，入门款在 AS3，官方提示这个平台还在建设，磁盘性能可能偏低，SLA 也比成熟平台低。</p>
+<p>AN4 目前全部缺货。AN5 有货，但起步就是 4 核 4 GB 的 MINI，每月 79.90 美元。</p>
+<h2 id="洛杉矶-premium-实测三网延迟和丢包">洛杉矶 Premium 实测：三网延迟和丢包</h2>
+<p>先看 ITDOG 的全国延迟，162 个监测点：</p>
+<p><img src="/_astro/dmit-lax-pro-itdog-ping-162.BpTK5f37_2ft903.webp" alt="ITDOG 从国内 162 个监测点 ping DMIT 洛杉矶 Premium，全国平均 158 ms，电信 155 ms、联通 163 ms、移动 157 ms" loading="lazy" decoding="async" width="1258" height="574"></p>
+<p>全国平均 158 ms，电信 155 ms、联通 163 ms、移动 157 ms，三网相差不到 10 ms。最快的是上海电信 129 ms，最慢的是西藏拉萨移动 207 ms，这部分差距主要来自距离。</p>
+<p>再看丢包，用 ping.pe 让国内 13 个节点各 ping 100 次：</p>
+<p><img src="/_astro/dmit-lax-pro-pingpe-china-loss.CnYbiqpC_1foX01.webp" alt="ping.pe 国内 13 个节点各 ping DMIT 洛杉矶 Premium 100 次，只有丽水移动丢包 1%，其余节点为 0%" loading="lazy" decoding="async" width="1024" height="299"></p>
+<p>13 个节点里只有丽水移动丢了 1%，其余都是 0%。丢包比延迟更能说明线路好坏，这个结果和 CN2 GIA 应有的表现一致。这些测试怎么做、结果怎么看，见 <a href="/posts/vps-speed-test/">VPS 测速教程</a>。</p>
+<h2 id="去程和回程路由三网回程都走-cn2-gia">去程和回程路由：三网回程都走 CN2 GIA</h2>
+<p>延迟和丢包是结果，线路好不好还要看路由。下面两张图是 2026 年 10 月测的，用的是同一个上海电信节点，一张看去程，一张看回程。</p>
+<p>去程是 ITDOG 从上海电信追踪到我的机器：</p>
+<p><img src="/_astro/dmit-lax-pro-outbound-telecom-itdog.CmA5zK1V_Z1pjtyK.webp" alt="ITDOG 上海电信到 DMIT 洛杉矶 Premium 的去程路由，连续 4 跳 59.43 开头的电信 CN2 节点，之后到达美国电信节点和 DMIT" loading="lazy" decoding="async" width="1553" height="470"></p>
+<p>从上海电信出来后，连续 4 跳都是 <code>59.43</code> 开头的电信 CN2 节点，接着到达美国的电信节点，再进入 DMIT，全程没有交给 <code>202.97</code>。这就是去程 CN2 GIA。</p>
+<p>回程是我在机器上追踪同一个上海电信 IP：</p>
+<p><img src="/_astro/dmit-lax-pro-return-telecom-traceroute.BsNzTnCM_ZczIgJ.webp" alt="DMIT 洛杉矶 Premium 到上海电信的回程路由，经过 3 跳 59.43 开头的 AS4809 节点后进入上海电信" loading="lazy" decoding="async" width="745" height="193"></p>
+<p>DMIT 出来后先经过一跳美国的电信节点（AS4134），再经过 3 跳 <code>59.43</code>（AS4809），然后直接进入上海电信，回程也是 CN2 GIA。逐跳怎么看，见<a href="/posts/how-to-check-cn2-gia-route/">怎么判断 VPS 是不是 CN2 GIA</a>。</p>
+<p>联通和移动我也测了，三网的去程和回程汇总如下：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-wrap"><table><thead><tr><th>运营商</th><th>去程</th><th>回程</th></tr></thead><tbody><tr><td>电信</td><td>CN2 GIA</td><td>CN2 GIA</td></tr><tr><td>联通</td><td>9929 转 AS10099</td><td>CN2 GIA</td></tr><tr><td>移动</td><td>CMIN2</td><td>CN2 GIA</td></tr></tbody></table></div>
+<p>联通、移动的回程都是先走 <code>59.43</code>，再交给各自的网络。去程三家各走自家的高端线路，这就是三网优化的含义。</p>
+<p>想自己验证，可以拿 <a href="/posts/dmit-test-ip/">DMIT 测试 IP</a> 里的洛杉矶 Premium 地址，在自己的网络上测一遍去程。</p>
+<h2 id="性能和带宽epyc-处理器千兆口基本跑满">性能和带宽：EPYC 处理器，千兆口基本跑满</h2>
+<p>性能数据是 2025 年首测、2026 年复测的。我的机器是较早买的套餐，不在现在入门款所在的 AS3 平台上，下面的磁盘结果不代表 AS3。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-wrap"><table><thead><tr><th>项目</th><th>结果</th></tr></thead><tbody><tr><td>处理器</td><td>AMD EPYC 9654，1 核</td></tr><tr><td>sysbench 单线程</td><td>4229 events/s</td></tr><tr><td>磁盘写入（bench.sh）</td><td>平均 839 MB/s</td></tr><tr><td>4K 随机写 / 随机读</td><td>29.3k / 2149 IOPS</td></tr><tr><td>到上海</td><td>上行 867 / 下行 859 Mbps</td></tr><tr><td>到东京</td><td>下行约 1035 Mbps</td></tr></tbody></table></div>
+<p>4K 随机读写是 fio 单队列（iodepth=1）测的，结果仅供参考。</p>
+<p>千兆端口基本能跑满，到上海的上下行都在 850 Mbps 以上。例外是新加坡，上行只有约 100 Mbps，不过国内用户一般用不到这个方向。</p>
+<p>还有两点和建站有关：25 端口出站被封，想直接发邮件要改用第三方邮件发送服务；IP 是 AS906 的原生 IP，多数数据库给的是低风险，只有 IPQS 给了 84 分的“可疑”评分。</p>
+<h2 id="换-ip-和退款买之前要知道的规则">换 IP 和退款：买之前要知道的规则</h2>
+<p>先说换 IP，Premium 和 Eyeball 满足下面全部条件，可以提交工单免费更换：</p>
+<ul>
+<li>实例已经购买满 7 天</li>
+<li>距离上一次更换 IP 满 15 天</li>
+<li>ICMP 和全部 TCP 端口都已被封</li>
+<li>服务剩余有效期不少于 7 天</li>
+</ul>
+<p>IP 在实例激活时就已被封的，可以直接免费换；不满足条件时每次 5 美元，间隔不少于 7 天。T1 没有免费更换，每次都要 5 美元。</p>
+<p>退款方面，新订单 3 天内、流量不超过 30 GB 可以全额退款；30 天内可以部分退款，按剩余流量或剩余时间计算。两种情况都要扣除支付通道的手续费。</p>
+<aside class="note note-warning" role="note" data-astro-cid-2nmadbt7><p class="note-title" data-astro-cid-2nmadbt7>线路不满意不在退款范围内</p>DMIT 服务条款把“网络不够好”和 IP 地理位置列为不予退款的情况，续费订单、用余额支付的订单也不退。下单前先用测试 IP 测好自己网络的延迟和丢包。</aside>
+<p>全额退款只有 3 天、30 GB 的门槛，线路不满意又不在退款范围内。搬瓦工有 30 天的退款保障，相比之下 DMIT 的退款政策要严得多。</p>
+<h2 id="dmit-的缺点和不适合的人">DMIT 的缺点和不适合的人</h2>
+<p>DMIT 性价比高，缺点也很明确，买之前要清楚下面几点：</p>
+<ul>
+<li>香港、东京 Premium 价格高</li>
+<li>库存紧张，热门平台经常缺货</li>
+<li>退款条件严，线路不满意不能退</li>
+<li>洛杉矶入门款所在的 AS3 平台还在建设</li>
+</ul>
+<p>缺货是最常遇到的问题。DMIT 补货只靠两种情况：老用户不续费释放出资源，或者新硬件上架。黑五这类大促期间，还会有特殊优惠。</p>
+<p>想买的套餐没货，先看同一系列的其他平台，比如洛杉矶 AN4 缺货就看 AN5 或 AS3。Premium 缺货时，同价的 Eyeball 也可以考虑，流量更多，但官方不保证线路；要低延迟又嫌香港贵，东京比香港便宜将近一半。</p>
+<p>如果很急，等不了补货，或者想要更长的退款期，可以看<a href="/go/bandwagonhost/" rel="sponsored nofollow noopener" target="_blank">搬瓦工</a>，它的 CN2 GIA 库存充足，还有 30 天的退款保障。各机房的测试结果见<a href="/posts/bandwagonhost-cn2-gia-test/">搬瓦工 CN2 GIA 测试</a>。</p>
+<p>另外，访客主要在海外、用不上国内线路的，买 Premium 不划算，前面讲的 Tier 1 更合适。</p>
+<h2 id="总结入门选-dmit-洛杉矶-premium急用选搬瓦工">总结：入门选 DMIT 洛杉矶 Premium，急用选搬瓦工</h2>
+<p>DMIT 的核心价值是便宜的三网优化：洛杉矶 Premium 入门款每月 10.90 美元，我实测去程三网各走高端线路，回程三网都是 CN2 GIA。</p>
+<p>入门用户我首推它。</p>
+<p>下单前先用测试 IP 测好自己的网络，因为线路不满意不在退款范围内；遇到缺货又很急，就选搬瓦工。</p>
+<div class="cta cta-summary"><p class="cta-eyebrow">DMIT</p><p class="cta-title">入门三网优化，首选 DMIT 洛杉矶 Premium</p><p class="cta-desc">洛杉矶、香港、东京都有 Premium 线路，洛杉矶入门款最便宜。</p><ul class="cta-points"><li>回程三网 CN2 GIA</li><li>去程三网各走高端线路</li><li>官网价格 2026 年 10 月核对</li></ul><a class="cta-action" href="/go/dmit/" rel="sponsored nofollow noopener" target="_blank">查看 DMIT 套餐和价格</a><p class="cta-note">联盟链接，通过它购买不会增加你的费用</p></div>
+<h2 id="常见问题">常见问题</h2>
+<h3 id="dmit-怎么样靠谱吗">DMIT 怎么样，靠谱吗？</h3>
+<p>线路是 DMIT 最大的优点，我实测洛杉矶 Premium 三网回程都走 CN2 GIA，丢包很低，价格也便宜。要注意的是库存紧张、退款条件严。</p>
+<h3 id="dmit-的线路是-cn2-gia-吗">DMIT 的线路是 CN2 GIA 吗？</h3>
+<p>Premium 是，官方说明包含电信 CN2 GIA，有线路保证。洛杉矶 Eyeball 我实测电信也走 CN2 GIA，但官方只承诺尽力优化。Tier 1 没有针对国内的优化，不是 CN2 GIA。</p>
+<h3 id="dmit-pro-和-premium-是一回事吗">DMIT Pro 和 Premium 是一回事吗？</h3>
+<p>是。官网价格页叫 Premium，官方文档里叫 Pro 系列，指的是同一个系列。同样，EB 是 Eyeball，T1 是 Tier 1。</p>
+<h3 id="dmit-t1-是什么线路值得买吗">DMIT T1 是什么线路，值得买吗？</h3>
+<p>T1 是 Tier 1 的简称，走国际线路，没有针对中国大陆的优化，年付 36.90 美元起。访客主要在海外、需要大流量时值得买；主要给国内用，选 Premium 或 Eyeball。</p>
+<h3 id="dmit-买了能退款吗">DMIT 买了能退款吗？</h3>
+<p>能，但有条件。新订单 3 天内、流量不超过 30 GB 可以全额退，30 天内可以部分退。网络不够好、IP 地理位置不在退款范围内，续费订单也不退。</p>
+<h3 id="dmit-可以免费换-ip-吗">DMIT 可以免费换 IP 吗？</h3>
+<p>Premium 和 Eyeball 满足购买时长、IP 被封等条件，可以提交工单免费换，具体条件见上文。T1 只能付费换，每次 5 美元。</p>
+<h3 id="dmit-的测试-ip-在哪里">DMIT 的测试 IP 在哪里？</h3>
+<p>官方 Looking Glass 上有三个机房各产品线的测试 IP，我整理在 <a href="/posts/dmit-test-ip/">DMIT 测试 IP</a> 里，也写了怎么测去程和回程。</p></div><section class="related"><h2 class="section-title">相关文章</h2><ul class="post-list"><li><a class="post-list-title" href="/posts/hostdare-cn2-gia-review/">HostDare CN2 GIA 评测：仅回程的低价线路，日常够不够用</a><p class="post-list-desc">HostDare CN2 GIA 评测：洛杉矶机房，回程三网优化、去程走普通线路，CSSD1 每年约 61 美元。用实测的延迟、丢包和回程路由，说明仅回程的线路日常够不够用、适合谁。</p><p class="meta"><time datetime="2026-11-09T00:00:00.000Z">2026年11月9日</time></p></li></ul></section></article></div><aside class="sidebar"><section class="widget"><h2 class="widget-title">推荐文章</h2><ol class="widget-list widget-ranked"><li><a href="/posts/what-is-cn2-gia/" title="CN2 GIA 是什么？电信高端线路为什么晚高峰也稳">CN2 GIA 是什么？电信高端线路为什么晚高峰也稳</a></li><li><a href="/posts/bandwagonhost-cn2-gia/" title="搬瓦工 CN2 GIA 套餐总览：哪些机房才是 CN2 GIA，各系列多少钱">搬瓦工 CN2 GIA 套餐总览：哪些机房才是 CN2 GIA，各系列多少钱</a></li></ol></section><nav class="widget toc toc-side" aria-label="目录"><h2 class="widget-title">目录</h2><ul><li class="toc-depth-2"><a href="#dmit-是什么自有网络的三网优化商家">DMIT 是什么：自有网络的三网优化商家</a></li><li class="toc-depth-2"><a href="#三条产品线premiumeyeball-和-tier-1-的区别">三条产品线：Premium、Eyeball 和 Tier 1 的区别</a></li><li class="toc-depth-3"><a href="#tier-1-适合谁最便宜但没有中国优化">Tier 1 适合谁：最便宜，但没有中国优化</a></li><li class="toc-depth-2"><a href="#三个机房和起步价洛杉矶最便宜香港最快">三个机房和起步价：洛杉矶最便宜，香港最快</a></li><li class="toc-depth-2"><a href="#洛杉矶-premium-实测三网延迟和丢包">洛杉矶 Premium 实测：三网延迟和丢包</a></li><li class="toc-depth-2"><a href="#去程和回程路由三网回程都走-cn2-gia">去程和回程路由：三网回程都走 CN2 GIA</a></li><li class="toc-depth-2"><a href="#性能和带宽epyc-处理器千兆口基本跑满">性能和带宽：EPYC 处理器，千兆口基本跑满</a></li><li class="toc-depth-2"><a href="#换-ip-和退款买之前要知道的规则">换 IP 和退款：买之前要知道的规则</a></li><li class="toc-depth-2"><a href="#dmit-的缺点和不适合的人">DMIT 的缺点和不适合的人</a></li><li class="toc-depth-2"><a href="#总结入门选-dmit-洛杉矶-premium急用选搬瓦工">总结：入门选 DMIT 洛杉矶 Premium，急用选搬瓦工</a></li><li class="toc-depth-2"><a href="#常见问题">常见问题</a></li><li class="toc-depth-3"><a href="#dmit-怎么样靠谱吗">DMIT 怎么样，靠谱吗？</a></li><li class="toc-depth-3"><a href="#dmit-的线路是-cn2-gia-吗">DMIT 的线路是 CN2 GIA 吗？</a></li><li class="toc-depth-3"><a href="#dmit-pro-和-premium-是一回事吗">DMIT Pro 和 Premium 是一回事吗？</a></li><li class="toc-depth-3"><a href="#dmit-t1-是什么线路值得买吗">DMIT T1 是什么线路，值得买吗？</a></li><li class="toc-depth-3"><a href="#dmit-买了能退款吗">DMIT 买了能退款吗？</a></li><li class="toc-depth-3"><a href="#dmit-可以免费换-ip-吗">DMIT 可以免费换 IP 吗？</a></li><li class="toc-depth-3"><a href="#dmit-的测试-ip-在哪里">DMIT 的测试 IP 在哪里？</a></li></ul></nav></aside></div></main><footer class="site-footer"><div class="container site-footer-inner"><nav aria-label="页脚导航"><a href="/archive/">全部文章</a><a href="/about/">关于</a><a href="/disclosure/">联盟披露</a><a href="/rss.xml">RSS</a></nav><p>© 2026 CN2 GIA VPS 指南。本站部分链接为联盟链接，通过它们购买不会增加你的费用。</p></div></footer><button class="back-to-top" id="back-to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button><script type="module">var e=document.getElementById(`site-header`),t=document.getElementById(`back-to-top`),n=window.scrollY;function r(){let r=window.scrollY;Math.abs(r-n)>4&&(e.classList.toggle(`is-hidden`,r>n&&r>120),n=r),e.classList.toggle(`is-scrolled`,r>8),t.classList.toggle(`is-visible`,r>300)}window.addEventListener(`scroll`,r,{passive:!0}),t.addEventListener(`click`,()=>window.scrollTo({top:0,behavior:`smooth`})),r();</script></body></html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>搬瓦工 CN2 GIA 测试：各机房测试 IP 和实测结果 | CN2 GIA VPS 指南</title><meta name="description" content="搬瓦工 CN2 GIA 测试：按官方 2026 年 10 月的机房清单整理 10 个 CN2 GIA 机房和测试 IP，附洛杉矶 DC9 和香港的延迟丢包实测、DC9 的去程路由，并与搬瓦工普通线路对照，教你看出是不是 CN2 GIA。"><link rel="canonical" href="https://fast-cn2gia.github.io/posts/bandwagonhost-cn2-gia-test/"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="alternate" type="application/rss+xml" title="CN2 GIA VPS 指南" href="/rss.xml"><link rel="sitemap" href="/sitemap-index.xml"><meta property="og:type" content="article"><meta property="og:site_name" content="CN2 GIA VPS 指南"><meta property="og:title" content="搬瓦工 CN2 GIA 测试：各机房测试 IP 和实测结果"><meta property="og:description" content="搬瓦工 CN2 GIA 测试：按官方 2026 年 10 月的机房清单整理 10 个 CN2 GIA 机房和测试 IP，附洛杉矶 DC9 和香港的延迟丢包实测、DC9 的去程路由，并与搬瓦工普通线路对照，教你看出是不是 CN2 GIA。"><meta property="og:url" content="https://fast-cn2gia.github.io/posts/bandwagonhost-cn2-gia-test/"><meta property="og:locale" content="zh_CN"><meta name="twitter:card" content="summary"><script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"搬瓦工 CN2 GIA 测试：各机房测试 IP 和实测结果","description":"搬瓦工 CN2 GIA 测试：按官方 2026 年 10 月的机房清单整理 10 个 CN2 GIA 机房和测试 IP，附洛杉矶 DC9 和香港的延迟丢包实测、DC9 的去程路由，并与搬瓦工普通线路对照，教你看出是不是 CN2 GIA。","datePublished":"2026-11-09T00:00:00.000Z","dateModified":"2026-11-09T00:00:00.000Z","author":{"@type":"Person","name":"站长"},"publisher":{"@type":"Organization","name":"CN2 GIA VPS 指南"},"mainEntityOfPage":"https://fast-cn2gia.github.io/posts/bandwagonhost-cn2-gia-test/","inLanguage":"zh-CN"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://fast-cn2gia.github.io/"},{"@type":"ListItem","position":2,"name":"教程","item":"https://fast-cn2gia.github.io/category/tutorial/"},{"@type":"ListItem","position":3,"name":"搬瓦工 CN2 GIA 测试：各机房测试 IP 和实测结果","item":"https://fast-cn2gia.github.io/posts/bandwagonhost-cn2-gia-test/"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"搬瓦工官方有没有公布测试 IP？","acceptedAnswer":{"@type":"Answer","text":"官网上没有。网上流传的测试 IP 大多来自第三方整理，本文表中的地址已核对属于搬瓦工的网络，可以放心拿来测。"}},{"@type":"Question","name":"搬瓦工哪些机房是 CN2 GIA？","acceptedAnswer":{"@type":"Answer","text":"按官方 2026 年 10 月的说明，共 10 个：洛杉矶 DC9、DC6、USCA5，圣何塞，纽约 USNY8，温哥华 CABC6，以及香港、东京、大阪、新加坡。网上常见的 DC3、DC4 等代号，官方清单里已经没有了。"}},{"@type":"Question","name":"搬瓦工 DC6 和 DC9 有什么区别？","acceptedAnswer":{"@type":"Answer","text":"两个都在洛杉矶，官方对线路的说明完全一样，都是电信 CN2 GIA、移动 CMIN2、联通 Premium。区别是数据中心不同，DC9 在 Coresite LA2，DC6 在 Digital Realty LAX10。"}},{"@type":"Question","name":"出现 202.97 就不是 CN2 GIA 吗？","acceptedAnswer":{"@type":"Answer","text":"不一定。国内段先过一跳 202.97 不影响判断，要看跨境段走的是不是 59.43。"}},{"@type":"Question","name":"买了之后发现机房不合适，能换吗？","acceptedAnswer":{"@type":"Answer","text":"能。搬瓦工官方说明，VPS 可以随时免费迁移机房，数据不会丢失。"}},{"@type":"Question","name":"测试 IP ping 不通怎么办？","acceptedAnswer":{"@type":"Answer","text":"先换同一机房的另一个测试 IP，DC6 和香港都不止一个地址。还不通，检查本地网络有没有经过代理或加速器，再换个时间重测。"}}]}</script><style>.note[data-astro-cid-2nmadbt7]{border-left:4px solid var(--note-accent);background:var(--note-bg);border-radius:0 6px 6px 0;margin:1.5em 0;padding:.75em 1em;font-size:.88em;line-height:1.7}.note-tip[data-astro-cid-2nmadbt7]{--note-accent:#7a93ac;--note-bg:#7a93ac1a}.note-warning[data-astro-cid-2nmadbt7]{--note-accent:#d9a21b;--note-bg:#d9a21b1a}.note-title[data-astro-cid-2nmadbt7]{margin:0 0 .25em;font-weight:600}.note[data-astro-cid-2nmadbt7] p{margin:0}.note[data-astro-cid-2nmadbt7] p+p{margin-top:.5em}
+</style><link rel="stylesheet" href="/_astro/Base.BEzORkuK.css"></head><body><header class="site-header" id="site-header"><div class="container site-header-inner"><a class="site-name" href="/"><svg class="site-logo" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="currentColor"></rect><path d="M8 21h16M8 16h10M8 11h16" stroke="#fff" stroke-width="2.5" stroke-linecap="round"></path></svg>CN2 GIA VPS 指南</a><nav class="site-nav" aria-label="主导航"><a href="/category/basics/">基础知识</a><a href="/category/tutorial/" aria-current="page">教程</a><a href="/category/review/">评测</a><a href="/category/recommend/">推荐</a></nav></div></header><main class="container"><div class="layout"><div class="layout-main"><article class="post"><nav class="breadcrumb" aria-label="面包屑"><a href="/">首页</a><span aria-hidden="true">/</span><a href="/category/tutorial/">教程</a></nav><h1>搬瓦工 CN2 GIA 测试：各机房测试 IP 和实测结果</h1><p class="meta"><span>站长</span><time datetime="2026-11-09T00:00:00.000Z">发布于 2026年11月9日</time></p><details class="toc toc-inline"><summary>目录</summary><ul><li class="toc-depth-2"><a href="#搬瓦工-cn2-gia-机房和测试-ip2026-年-10-月整理">搬瓦工 CN2 GIA 机房和测试 IP（2026 年 10 月整理）</a></li><li class="toc-depth-2"><a href="#第一步测延迟和丢包">第一步：测延迟和丢包</a></li><li class="toc-depth-2"><a href="#第二步追踪去程路由">第二步：追踪去程路由</a></li><li class="toc-depth-2"><a href="#对照普通线路测出来是什么样">对照：普通线路测出来是什么样</a></li><li class="toc-depth-2"><a href="#回程只能买了之后测">回程只能买了之后测</a></li><li class="toc-depth-2"><a href="#各机房怎么选">各机房怎么选</a></li><li class="toc-depth-2"><a href="#测试结果不理想怎么办">测试结果不理想怎么办</a></li><li class="toc-depth-2"><a href="#总结先测丢包和去程再选机房">总结：先测丢包和去程，再选机房</a></li><li class="toc-depth-2"><a href="#常见问题">常见问题</a></li><li class="toc-depth-3"><a href="#搬瓦工官方有没有公布测试-ip">搬瓦工官方有没有公布测试 IP？</a></li><li class="toc-depth-3"><a href="#搬瓦工哪些机房是-cn2-gia">搬瓦工哪些机房是 CN2 GIA？</a></li><li class="toc-depth-3"><a href="#搬瓦工-dc6-和-dc9-有什么区别">搬瓦工 DC6 和 DC9 有什么区别？</a></li><li class="toc-depth-3"><a href="#出现-20297-就不是-cn2-gia-吗">出现 202.97 就不是 CN2 GIA 吗？</a></li><li class="toc-depth-3"><a href="#买了之后发现机房不合适能换吗">买了之后发现机房不合适，能换吗？</a></li><li class="toc-depth-3"><a href="#测试-ip-ping-不通怎么办">测试 IP ping 不通怎么办？</a></li></ul></details><div class="prose"><p>搬瓦工 CN2 GIA 测试先看清单：按官方 2026 年 10 月的机房说明，目前有 10 个机房走 CN2 GIA。官方没有公开测试 IP，网上流传的洛杉矶 DC9、DC6 和香港的地址仍然可以用。</p>
+<p>测的时候重点看两样：丢包率，以及去程有没有走 <code>59.43</code>。</p>
+<p>我首推洛杉矶的 DC9 和 DC6。下面是 DC9 和香港的实测结果，以及一台搬瓦工普通线路机器的对照，测出什么样才算 CN2 GIA，对照着一看就清楚。</p>
+<h2 id="搬瓦工-cn2-gia-机房和测试-ip2026-年-10-月整理">搬瓦工 CN2 GIA 机房和测试 IP（2026 年 10 月整理）</h2>
+<p>机房和线路来自搬瓦工官网的套餐目录，凡是官方线路说明里写了 CN2 GIA 的都列在下面。测试 IP 官方没有公布，表中的地址来自网络收集，我核对过都属于搬瓦工的网络（AS25820）。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-wrap"><table><thead><tr><th>机房</th><th>代号</th><th>套餐系列</th><th>测试 IP</th></tr></thead><tbody><tr><td>洛杉矶 DC9</td><td>USCA_9</td><td>E-Commerce</td><td><code>89.208.246.192</code></td></tr><tr><td>洛杉矶 DC6</td><td>USCA_6</td><td>E-Commerce</td><td><code>173.242.113.114</code>、<code>162.244.241.102</code></td></tr><tr><td>洛杉矶</td><td>USCA_5</td><td>E-Commerce+SLA</td><td>未公开</td></tr><tr><td>圣何塞</td><td>USCA_SJC5</td><td>E-Commerce</td><td>未公开</td></tr><tr><td>纽约</td><td>USNY_8</td><td>E-Commerce</td><td>未公开</td></tr><tr><td>温哥华</td><td>CABC_6</td><td>E-Commerce</td><td>未公开</td></tr><tr><td>香港</td><td>HK_8</td><td>Ultra</td><td><code>93.179.124.115</code>、<code>93.179.124.235</code>、<code>93.179.126.127</code></td></tr><tr><td>东京</td><td>JPTY_8</td><td>Ultra</td><td>未公开</td></tr><tr><td>大阪</td><td>JPOS_6</td><td>Ultra</td><td>未公开</td></tr><tr><td>新加坡</td><td>SG_8</td><td>Ultra</td><td>未公开</td></tr></tbody></table></div>
+<p>E-Commerce 系列的官方说明都是电信 CN2 GIA、移动 CMIN2、联通 Premium，也就是三网优化。</p>
+<p>Ultra 系列是香港、日本和新加坡这些亚洲机房的 CN2 GIA，带宽 1 Gbps 起，价格贵得多。各系列的配置和价格，放在<a href="/posts/bandwagonhost-cn2-gia/">搬瓦工 CN2 GIA 套餐总览</a>里讲。</p>
+<aside class="note note-tip" role="note" data-astro-cid-2nmadbt7><p class="note-title" data-astro-cid-2nmadbt7>测试 IP 的来源</p>表中的测试 IP 是网络流传的地址，已核对属于搬瓦工的网络，但具体对应哪个机房无法从外部确认。测试地址可能随机房调整而变化，ping 不通时换同一机房的另一个地址。</aside>
+<h2 id="第一步测延迟和丢包">第一步：测延迟和丢包</h2>
+<p>先在自己电脑上 ping 测试 IP 50 次，看平均延迟和丢包率：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D"># Windows</span></span>
+<span class="line"><span style="color:#B392F0">ping</span><span style="color:#79B8FF"> -n</span><span style="color:#79B8FF"> 50</span><span style="color:#79B8FF"> 89.208.246.192</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># macOS / Linux</span></span>
+<span class="line"><span style="color:#B392F0">ping</span><span style="color:#79B8FF"> -c</span><span style="color:#79B8FF"> 50</span><span style="color:#79B8FF"> 89.208.246.192</span></span></code></pre>
+<p>自己的电脑只代表一个地方、一家运营商，更推荐用 ITDOG 和 ping.pe 这类多节点工具。下面是洛杉矶 DC9 中午的测试结果，先看 ITDOG 的全国延迟：</p>
+<p><img src="/_astro/bandwagonhost-dc9-itdog-ping.By4s3rfW_26OOlN.webp" alt="ITDOG 全国 ping 搬瓦工洛杉矶 DC9 CN2 GIA，全国平均延迟 164 ms，三网都在 165 ms 左右" loading="lazy" decoding="async" width="1024" height="458"></p>
+<p>全国平均 164 ms，电信、联通、移动都在 165 ms 左右，最慢的节点也只有 217 ms。三网这么均衡，和官方三网优化的说明对得上。</p>
+<p>再看丢包。ping.pe 让国内 12 个节点各 ping 100 次：</p>
+<p><img src="/_astro/bandwagonhost-dc9-pingpe-loss.BaFY8Lig_Z1M6igo.webp" alt="ping.pe 国内 12 个节点各 ping 搬瓦工洛杉矶 DC9 100 次，只有 1 个节点丢包 1%，其余为 0%" loading="lazy" decoding="async" width="1024" height="299"></p>
+<p>只有丽水电信丢了 1%，其余全部为 0，延迟波动最高也只有 3.45 ms。香港我用同样的方法在下午测了 <code>93.179.124.115</code>，国内 13 个节点各 ping 101 次：</p>
+<p><img src="/_astro/bandwagonhost-hk-pingpe-china-loss.ZAUPLVKn_Zqu313.webp" alt="ping.pe 国内 13 个节点各 ping 搬瓦工香港 CN2 GIA 测试 IP 101 次，丢包率全部为 0%，平均延迟 12 到 56 ms" loading="lazy" decoding="async" width="1310" height="379"></p>
+<p>13 个节点全部零丢包，平均延迟在 12 到 56 ms 之间，广州最低。香港比洛杉矶快了一百多毫秒，但两个机房的丢包都接近 0，这才是 CN2 GIA 该有的样子。</p>
+<h2 id="第二步追踪去程路由">第二步：追踪去程路由</h2>
+<p>延迟和丢包只能说明线路好不好，要确认是不是 CN2 GIA，还得看路由。下面是用 ping.pe 的 MTR，从上海阿里云节点追踪 DC9 测试 IP 的结果，这个节点的出口走的是上海电信：</p>
+<p><img src="/_astro/bandwagonhost-dc9-shanghai-outbound-mtr.D7nsHEeF_ZHXkFt.webp" alt="从上海电信出口追踪搬瓦工洛杉矶 DC9 测试 IP，经过上海电信后连续四跳 59.43 开头的 CN2 节点进入搬瓦工，没有 202.97" loading="lazy" decoding="async" width="1321" height="523"></p>
+<p>第 9 到 11 跳是上海电信的本地网络，从第 12 跳开始连续四跳 <code>59.43</code>，最后一跳 <code>59.43.189.38</code> 的延迟已经到了 150 ms，说明数据在 CN2 上跨过了太平洋。之后直接进入搬瓦工，全程没有 <code>202.97</code>。</p>
+<p>第 16 跳搬瓦工路由器的名字里带着“cn2gi”，可以当个旁证。</p>
+<p>我同时从江苏电信的节点测了一次，情况略有不同：在国内先过了一跳 <code>202.97</code>，延迟只有 7 ms，之后才进入 <code>59.43</code> 跨境。这不影响判断，要看的是跨境那一段走的是谁、<code>59.43</code> 之后有没有再交给 <code>202.97</code>。</p>
+<p>图里有些中间跳的丢包率高达 80% 以上，终点却是 0%。这是路由器限制了探测包的回应，看终点那一跳就行。逐跳的读法见<a href="/posts/how-to-check-cn2-gia-route/">怎么判断 VPS 是不是 CN2 GIA</a>。</p>
+<h2 id="对照普通线路测出来是什么样">对照：普通线路测出来是什么样</h2>
+<p>只看好结果，很难知道什么算差。下面是搬瓦工纽约 USNY_6 的测试结果。搬瓦工纽约也有 CN2 GIA 机房 USNY_8，这里用的是走普通线路的 USNY_6，测试时间是今年 5 月晚上 8 点：</p>
+<p><img src="/_astro/bandwagonhost-ny-usny6-pingpe-loss.B1pgsy14_2gxoSO.webp" alt="ping.pe 国内 13 个节点各 ping 搬瓦工纽约普通线路 100 次，丢包率 0% 到 20%，广州腾讯 20%" loading="lazy" decoding="async" width="1024" height="294"></p>
+<p>13 个节点里只有 2 个没有丢包，广州腾讯丢了 20%，江苏移动 13%，右侧的延迟曲线上布满了红色的丢包标记。几乎每个节点都有零星的中断，打开网页、远程登录时就会感觉到卡顿。去程路由也不一样：</p>
+<p><img src="/_astro/bandwagonhost-ny-usny6-shanghai-outbound-163.RLv8tmgb_1S1l6z.webp" alt="从上海电信追踪搬瓦工纽约普通线路，经过 202.97 开头的 163 骨干节点后交给 Hurricane Electric" loading="lazy" decoding="async" width="1603" height="668"></p>
+<p>出了上海，第 5 到 7 跳都是 <code>202.97</code> 开头的 163 骨干网，之后交给美国的 Hurricane Electric，一跳 <code>59.43</code> 都没有。跨境这一段走的是 163，这就是典型的普通线路。</p>
+<p>纽约比洛杉矶远，延迟高一些很正常，所以这里不比延迟。两组的时段也不同，DC9 和香港是白天测的，但按我长期使用的经验，优化线路到了晚高峰，丢包率依旧稳定，延迟也只上升几毫秒。</p>
+<p>普通线路就不一样了，晚上一拥堵就开始丢包。路由的差别更直接：跨境段走 163 还是 <code>59.43</code>，一看便知。为什么普通线路晚上会堵，<a href="/posts/what-is-cn2-gia/">CN2 GIA 是什么</a>里有详细的解释。</p>
+<h2 id="回程只能买了之后测">回程只能买了之后测</h2>
+<p>回程是机房到你的方向，同样重要。搬瓦工没有提供公开的 Looking Glass 页面，没办法像有些商家那样在网页上直接测，只能买了机器之后在 VPS 上测。</p>
+<p>方法是在机器上运行 backtrace 看三网回程，再用 traceroute 看完整路由，具体命令和结果的读法在 <a href="/posts/vps-speed-test/">VPS 测速教程</a>的回程一节。</p>
+<p>搬瓦工官方说明，VPS 可以随时免费迁移机房，数据不会丢失，随时可以换一个机房。</p>
+<h2 id="各机房怎么选">各机房怎么选</h2>
+<p>我首推洛杉矶的 DC9 和 DC6，整体性价比高。按官方的说明，两个机房的线路完全一样，只是数据中心不同，选当时有货的那个就行。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-wrap"><table><thead><tr><th>机房</th><th>延迟</th><th>适合谁</th></tr></thead><tbody><tr><td>洛杉矶 DC9、DC6</td><td>约 165 ms（DC9 实测）</td><td>大多数人，首选</td></tr><tr><td>香港</td><td>12 到 56 ms</td><td>对延迟有硬性要求</td></tr><tr><td>东京、大阪</td><td>未实测</td><td>想要低延迟的另一个选择</td></tr></tbody></table></div>
+<p>DC6 我没有实测，按官方说明线路和 DC9 相同，下单前可以拿它的测试 IP 自己测一遍。DC9 的延迟比香港高一百多毫秒，建站、远程登录这类日常使用完全够用。</p>
+<p>香港和日本属于 Ultra 系列，价格差距很大。按 2026 年 10 月官网价格，香港入门款每月 89.99 美元，洛杉矶 DC9 入门款每 3 个月 89.99 美元，相差 3 倍。如非必要，普通用户不建议选。</p>
+<div class="cta cta-box"><div class="cta-body"><p class="cta-title">搬瓦工 CN2 GIA 机房</p><p class="cta-desc">洛杉矶、香港、日本等 10 个机房走 CN2 GIA，测完选好机房再下单。</p></div><a class="cta-action" href="/go/bandwagonhost/" rel="sponsored nofollow noopener" target="_blank">去搬瓦工官网看机房和套餐</a></div>
+<p>确实需要更低的延迟，再考虑香港或日本。东京和大阪没有公开的测试 IP，我也没有实测，只能买了之后自己测，不满意就按下面的方法排查。</p>
+<h2 id="测试结果不理想怎么办">测试结果不理想怎么办</h2>
+<p>先别急着下结论，按下面几项排查一遍：</p>
+<ul>
+<li>测试 IP 是否对应你想买的机房</li>
+<li>是否只测了一次，没有晚上的数据</li>
+<li>本地网络有没有开代理或加速器</li>
+</ul>
+<p>排除这些之后仍然不理想，先换搬瓦工 DC6 或香港的测试 IP 试试。都不满意，再按同样的方法测一下 <a href="/posts/dmit-test-ip/">DMIT 测试 IP</a>，比较两家的丢包率和去程跨境段，哪家在你的网络上更稳，就选哪家。</p>
+<h2 id="总结先测丢包和去程再选机房">总结：先测丢包和去程，再选机房</h2>
+<p>搬瓦工 CN2 GIA 测试看两样：丢包率接近 0，去程跨境段走 <code>59.43</code>。洛杉矶 DC9 两样都做到了，香港的丢包同样接近 0，而同一家的纽约普通线路，去程跨境段走的是 163。</p>
+<p>先拿 DC9 的测试 IP <code>89.208.246.192</code> 测一遍，最好在晚上八点到十一点再测一次。</p>
+<div class="cta cta-summary"><p class="cta-eyebrow">搬瓦工</p><p class="cta-title">测完满意？去搬瓦工官网选机房</p><p class="cta-desc">洛杉矶 DC9、DC6 性价比高，香港、日本延迟更低。</p><ul class="cta-points"><li>10 个机房走 CN2 GIA</li><li>洛杉矶 DC9 三网平均约 165 ms，丢包接近 0</li><li>可以随时免费迁移机房</li></ul><a class="cta-action" href="/go/bandwagonhost/" rel="sponsored nofollow noopener" target="_blank">查看搬瓦工套餐</a><p class="cta-note">联盟链接，通过它购买不会增加你的费用</p></div>
+<h2 id="常见问题">常见问题</h2>
+<h3 id="搬瓦工官方有没有公布测试-ip">搬瓦工官方有没有公布测试 IP？</h3>
+<p>官网上没有。网上流传的测试 IP 大多来自第三方整理，本文表中的地址已核对属于搬瓦工的网络，可以放心拿来测。</p>
+<h3 id="搬瓦工哪些机房是-cn2-gia">搬瓦工哪些机房是 CN2 GIA？</h3>
+<p>按官方 2026 年 10 月的说明，共 10 个：洛杉矶 DC9、DC6、USCA_5，圣何塞，纽约 USNY_8，温哥华 CABC_6，以及香港、东京、大阪、新加坡。网上常见的 DC3、DC4 等代号，官方清单里已经没有了。</p>
+<h3 id="搬瓦工-dc6-和-dc9-有什么区别">搬瓦工 DC6 和 DC9 有什么区别？</h3>
+<p>两个都在洛杉矶，官方对线路的说明完全一样，都是电信 CN2 GIA、移动 CMIN2、联通 Premium。区别是数据中心不同，DC9 在 Coresite LA2，DC6 在 Digital Realty LAX10。</p>
+<h3 id="出现-20297-就不是-cn2-gia-吗">出现 202.97 就不是 CN2 GIA 吗？</h3>
+<p>不一定。国内段先过一跳 <code>202.97</code> 不影响判断，要看跨境段走的是不是 <code>59.43</code>。</p>
+<h3 id="买了之后发现机房不合适能换吗">买了之后发现机房不合适，能换吗？</h3>
+<p>能。搬瓦工官方说明，VPS 可以随时免费迁移机房，数据不会丢失。</p>
+<h3 id="测试-ip-ping-不通怎么办">测试 IP ping 不通怎么办？</h3>
+<p>先换同一机房的另一个测试 IP，DC6 和香港都不止一个地址。还不通，检查本地网络有没有经过代理或加速器，再换个时间重测。</p></div><section class="related"><h2 class="section-title">相关文章</h2><ul class="post-list"><li><a class="post-list-title" href="/posts/dmit-test-ip/">DMIT 测试 IP 汇总（2026 年 10 月核对）：去程回程怎么测</a><p class="post-list-desc">DMIT 测试 IP 汇总：洛杉矶、香港、东京 8 个地址，2026 年 10 月从官方 Looking Glass 核对。在本地测去程，在 lg.dmit.sh 测回程，附洛杉矶 Pro 的全国延迟、晚高峰丢包和回程路由实测。</p><p class="meta"><time datetime="2026-11-09T00:00:00.000Z">2026年11月9日</time></p></li><li><a class="post-list-title" href="/posts/how-to-check-cn2-gia-route/">怎么判断 VPS 是不是 CN2 GIA？看懂去程和回程路由</a><p class="post-list-desc">怎么判断 VPS 是不是 CN2 GIA？做路由追踪，看 59.43 开头的 CN2 节点之后有没有交给 202.97。本文用真实截图讲去程、回程分别怎么测，一键脚本的局限，以及 CN2 GT 和普通线路长什么样。</p><p class="meta"><time datetime="2026-11-09T00:00:00.000Z">2026年11月9日</time></p></li><li><a class="post-list-title" href="/posts/vps-speed-test/">VPS 测速教程：延迟、丢包、带宽和回程路由怎么测（附实测）</a><p class="post-list-desc">VPS 测速教程：用一台香港 CN2 GIA VPS 的真实测试结果，讲清怎么测国内三网的延迟和丢包、回程路由、带宽和硬盘性能，每一项看哪个数字、什么结果算正常。</p><p class="meta"><time datetime="2026-11-09T00:00:00.000Z">2026年11月9日</time></p></li></ul></section></article></div><aside class="sidebar"><section class="widget"><h2 class="widget-title">推荐文章</h2><ol class="widget-list widget-ranked"><li><a href="/posts/what-is-cn2-gia/" title="CN2 GIA 是什么？电信高端线路为什么晚高峰也稳">CN2 GIA 是什么？电信高端线路为什么晚高峰也稳</a></li><li><a href="/posts/dmit-review/" title="DMIT 评测：Premium、Eyeball、Tier 1 怎么选，附洛杉矶去回程实测">DMIT 评测：Premium、Eyeball、Tier 1 怎么选，附洛杉矶去回程实测</a></li><li><a href="/posts/bandwagonhost-cn2-gia/" title="搬瓦工 CN2 GIA 套餐总览：哪些机房才是 CN2 GIA，各系列多少钱">搬瓦工 CN2 GIA 套餐总览：哪些机房才是 CN2 GIA，各系列多少钱</a></li></ol></section><nav class="widget toc toc-side" aria-label="目录"><h2 class="widget-title">目录</h2><ul><li class="toc-depth-2"><a href="#搬瓦工-cn2-gia-机房和测试-ip2026-年-10-月整理">搬瓦工 CN2 GIA 机房和测试 IP（2026 年 10 月整理）</a></li><li class="toc-depth-2"><a href="#第一步测延迟和丢包">第一步：测延迟和丢包</a></li><li class="toc-depth-2"><a href="#第二步追踪去程路由">第二步：追踪去程路由</a></li><li class="toc-depth-2"><a href="#对照普通线路测出来是什么样">对照：普通线路测出来是什么样</a></li><li class="toc-depth-2"><a href="#回程只能买了之后测">回程只能买了之后测</a></li><li class="toc-depth-2"><a href="#各机房怎么选">各机房怎么选</a></li><li class="toc-depth-2"><a href="#测试结果不理想怎么办">测试结果不理想怎么办</a></li><li class="toc-depth-2"><a href="#总结先测丢包和去程再选机房">总结：先测丢包和去程，再选机房</a></li><li class="toc-depth-2"><a href="#常见问题">常见问题</a></li><li class="toc-depth-3"><a href="#搬瓦工官方有没有公布测试-ip">搬瓦工官方有没有公布测试 IP？</a></li><li class="toc-depth-3"><a href="#搬瓦工哪些机房是-cn2-gia">搬瓦工哪些机房是 CN2 GIA？</a></li><li class="toc-depth-3"><a href="#搬瓦工-dc6-和-dc9-有什么区别">搬瓦工 DC6 和 DC9 有什么区别？</a></li><li class="toc-depth-3"><a href="#出现-20297-就不是-cn2-gia-吗">出现 202.97 就不是 CN2 GIA 吗？</a></li><li class="toc-depth-3"><a href="#买了之后发现机房不合适能换吗">买了之后发现机房不合适，能换吗？</a></li><li class="toc-depth-3"><a href="#测试-ip-ping-不通怎么办">测试 IP ping 不通怎么办？</a></li></ul></nav></aside></div></main><footer class="site-footer"><div class="container site-footer-inner"><nav aria-label="页脚导航"><a href="/archive/">全部文章</a><a href="/about/">关于</a><a href="/disclosure/">联盟披露</a><a href="/rss.xml">RSS</a></nav><p>© 2026 CN2 GIA VPS 指南。本站部分链接为联盟链接，通过它们购买不会增加你的费用。</p></div></footer><button class="back-to-top" id="back-to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button><script type="module">var e=document.getElementById(`site-header`),t=document.getElementById(`back-to-top`),n=window.scrollY;function r(){let r=window.scrollY;Math.abs(r-n)>4&&(e.classList.toggle(`is-hidden`,r>n&&r>120),n=r),e.classList.toggle(`is-scrolled`,r>8),t.classList.toggle(`is-visible`,r>300)}window.addEventListener(`scroll`,r,{passive:!0}),t.addEventListener(`click`,()=>window.scrollTo({top:0,behavior:`smooth`})),r();</script></body></html>

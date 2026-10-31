@@ -1,0 +1,195 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>怎么判断 VPS 是不是 CN2 GIA？看懂去程和回程路由 | CN2 GIA VPS 指南</title><meta name="description" content="怎么判断 VPS 是不是 CN2 GIA？做路由追踪，看 59.43 开头的 CN2 节点之后有没有交给 202.97。本文用真实截图讲去程、回程分别怎么测，一键脚本的局限，以及 CN2 GT 和普通线路长什么样。"><link rel="canonical" href="https://fast-cn2gia.github.io/posts/how-to-check-cn2-gia-route/"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="alternate" type="application/rss+xml" title="CN2 GIA VPS 指南" href="/rss.xml"><link rel="sitemap" href="/sitemap-index.xml"><meta property="og:type" content="article"><meta property="og:site_name" content="CN2 GIA VPS 指南"><meta property="og:title" content="怎么判断 VPS 是不是 CN2 GIA？看懂去程和回程路由"><meta property="og:description" content="怎么判断 VPS 是不是 CN2 GIA？做路由追踪，看 59.43 开头的 CN2 节点之后有没有交给 202.97。本文用真实截图讲去程、回程分别怎么测，一键脚本的局限，以及 CN2 GT 和普通线路长什么样。"><meta property="og:url" content="https://fast-cn2gia.github.io/posts/how-to-check-cn2-gia-route/"><meta property="og:locale" content="zh_CN"><meta name="twitter:card" content="summary"><script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"怎么判断 VPS 是不是 CN2 GIA？看懂去程和回程路由","description":"怎么判断 VPS 是不是 CN2 GIA？做路由追踪，看 59.43 开头的 CN2 节点之后有没有交给 202.97。本文用真实截图讲去程、回程分别怎么测，一键脚本的局限，以及 CN2 GT 和普通线路长什么样。","datePublished":"2026-11-09T00:00:00.000Z","dateModified":"2026-11-09T00:00:00.000Z","author":{"@type":"Person","name":"站长"},"publisher":{"@type":"Organization","name":"CN2 GIA VPS 指南"},"mainEntityOfPage":"https://fast-cn2gia.github.io/posts/how-to-check-cn2-gia-route/","inLanguage":"zh-CN"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://fast-cn2gia.github.io/"},{"@type":"ListItem","position":2,"name":"教程","item":"https://fast-cn2gia.github.io/category/tutorial/"},{"@type":"ListItem","position":3,"name":"怎么判断 VPS 是不是 CN2 GIA？看懂去程和回程路由","item":"https://fast-cn2gia.github.io/posts/how-to-check-cn2-gia-route/"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"59.43 和 202.97 有什么区别？","acceptedAnswer":{"@type":"Answer","text":"59.43 开头的 IP 属于电信的 CN2 骨干网（AS4809），202.97 开头的属于普通的 163 骨干网（AS4134）。路由里出现哪一种，就说明数据走的是哪张网。"}},{"@type":"Question","name":"路由里既有 59.43 又有 202.97 是什么线路？","acceptedAnswer":{"@type":"Answer","text":"通常是 CN2 GT：跨境段走 CN2，进入国内后交给 163。典型的样子是 59.43.245 开头的节点后面接 202.97。它比纯 163 好，但晚高峰仍可能波动，不是 CN2 GIA。"}},{"@type":"Question","name":"backtrace 显示“电信CN2”就是 CN2 GIA 吗？","acceptedAnswer":{"@type":"Answer","text":"不一定。backtrace 只要看到 59.43 就标成“电信CN2”，CN2 GT 也会这样显示。它能说明回程进了 CN2，要确认是 GIA，还需要用 traceroute -A 看完整路由里有没有 202.97。"}},{"@type":"Question","name":"联通和移动用户怎么判断线路好坏？","acceptedAnswer":{"@type":"Answer","text":"去程看自家运营商的高端线路：联通看 218.105、210.51（9929 / CUP），移动看 223.120.16 到 223.120.19（CMIN2）。回程如果全程走电信的 59.43，同样是很好的线路。"}},{"@type":"Question","name":"路由追踪中间节点丢包率很高，是线路有问题吗？","acceptedAnswer":{"@type":"Answer","text":"一般不是。路由器会优先转发数据，回应探测的优先级很低，所以中间节点常常显示很高的丢包率。只要最后一跳的丢包率接近 0%，线路就没有问题。"}},{"@type":"Question","name":"没有测试 IP 怎么办？","acceptedAnswer":{"@type":"Answer","text":"可以向商家客服索要，或者使用商家的 Looking Glass 页面。两样都不提供的，建议先买月付套餐，在退款期内把去程、回程和丢包都测完再决定。"}},{"@type":"Question","name":"CN2 GIA 会不会变成 CN2 GT？","acceptedAnswer":{"@type":"Answer","text":"有可能。线路是电信和商家之间的合作，会随着合同和网络调整发生变化。买了之后隔一段时间复测一次路由，发现变成 GT 可以向商家反馈。"}}]}</script><style>.note[data-astro-cid-2nmadbt7]{border-left:4px solid var(--note-accent);background:var(--note-bg);border-radius:0 6px 6px 0;margin:1.5em 0;padding:.75em 1em;font-size:.88em;line-height:1.7}.note-tip[data-astro-cid-2nmadbt7]{--note-accent:#7a93ac;--note-bg:#7a93ac1a}.note-warning[data-astro-cid-2nmadbt7]{--note-accent:#d9a21b;--note-bg:#d9a21b1a}.note-title[data-astro-cid-2nmadbt7]{margin:0 0 .25em;font-weight:600}.note[data-astro-cid-2nmadbt7] p{margin:0}.note[data-astro-cid-2nmadbt7] p+p{margin-top:.5em}
+</style><link rel="stylesheet" href="/_astro/Base.BEzORkuK.css"></head><body><header class="site-header" id="site-header"><div class="container site-header-inner"><a class="site-name" href="/"><svg class="site-logo" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="currentColor"></rect><path d="M8 21h16M8 16h10M8 11h16" stroke="#fff" stroke-width="2.5" stroke-linecap="round"></path></svg>CN2 GIA VPS 指南</a><nav class="site-nav" aria-label="主导航"><a href="/category/basics/">基础知识</a><a href="/category/tutorial/" aria-current="page">教程</a><a href="/category/review/">评测</a><a href="/category/recommend/">推荐</a></nav></div></header><main class="container"><div class="layout"><div class="layout-main"><article class="post"><nav class="breadcrumb" aria-label="面包屑"><a href="/">首页</a><span aria-hidden="true">/</span><a href="/category/tutorial/">教程</a></nav><h1>怎么判断 VPS 是不是 CN2 GIA？看懂去程和回程路由</h1><p class="meta"><span>站长</span><time datetime="2026-11-09T00:00:00.000Z">发布于 2026年11月9日</time></p><details class="toc toc-inline"><summary>目录</summary><ul><li class="toc-depth-2"><a href="#先认识路由里的路标ip-开头和-as-号">先认识路由里的“路标”：IP 开头和 AS 号</a></li><li class="toc-depth-2"><a href="#测去程从国内追踪到-vps">测去程：从国内追踪到 VPS</a></li><li class="toc-depth-2"><a href="#测回程在-vps-上追踪回国内">测回程：在 VPS 上追踪回国内</a></li><li class="toc-depth-3"><a href="#一键脚本快速看三网回程">一键脚本：快速看三网回程</a></li><li class="toc-depth-3"><a href="#完整路由确认全程都是-cn2">完整路由：确认全程都是 CN2</a></li><li class="toc-depth-3"><a href="#没买机器用-looking-glass">没买机器：用 Looking Glass</a></li><li class="toc-depth-2"><a href="#gia-还是-gt看-5943-之后交给了谁">GIA 还是 GT：看 59.43 之后交给了谁</a></li><li class="toc-depth-2"><a href="#读路由结果的五个误区">读路由结果的五个误区</a></li><li class="toc-depth-2"><a href="#确认是-gia-之后再看丢包率">确认是 GIA 之后：再看丢包率</a></li><li class="toc-depth-2"><a href="#总结下单前测去程买后复查回程">总结：下单前测去程，买后复查回程</a></li><li class="toc-depth-2"><a href="#常见问题">常见问题</a></li><li class="toc-depth-3"><a href="#5943-和-20297-有什么区别">59.43 和 202.97 有什么区别？</a></li><li class="toc-depth-3"><a href="#路由里既有-5943-又有-20297-是什么线路">路由里既有 59.43 又有 202.97 是什么线路？</a></li><li class="toc-depth-3"><a href="#backtrace-显示电信cn2就是-cn2-gia-吗">backtrace 显示“电信CN2”就是 CN2 GIA 吗？</a></li><li class="toc-depth-3"><a href="#联通和移动用户怎么判断线路好坏">联通和移动用户怎么判断线路好坏？</a></li><li class="toc-depth-3"><a href="#路由追踪中间节点丢包率很高是线路有问题吗">路由追踪中间节点丢包率很高，是线路有问题吗？</a></li><li class="toc-depth-3"><a href="#没有测试-ip-怎么办">没有测试 IP 怎么办？</a></li><li class="toc-depth-3"><a href="#cn2-gia-会不会变成-cn2-gt">CN2 GIA 会不会变成 CN2 GT？</a></li></ul></details><div class="prose"><p>怎么判断 VPS 是不是 CN2 GIA？</p>
+<p>做一次路由追踪就知道：<code>59.43</code> 开头的 CN2 节点一路把数据送进国内，中间不交给 <code>202.97</code> 开头的 163 节点，才是真正的 CN2 GIA。去程和回程要分开测，两个方向都看。</p>
+<p>商家页面上的“CN2”不一定是 GIA。</p>
+<p>很多所谓的 CN2 线路其实是 CN2 GT，跨境之后就回到了普通的 163，晚高峰照样堵。常用的一键测试脚本也分不清这两者，只看脚本的结论很容易被误导。</p>
+<p>下面我用几张自己测过的路由截图，从怎么看节点讲起，依次讲去程、回程怎么测，GIA 和 GT 怎么分，最后讲确认线路之后还要看什么。</p>
+<h2 id="先认识路由里的路标ip-开头和-as-号">先认识路由里的“路标”：IP 开头和 AS 号</h2>
+<p>路由追踪的结果是一串节点，每一行是数据经过的一台路由器。判断线路，看的是骨干网节点的 IP 开头，或者工具标出的 AS 号，它们就像高速公路上的路牌。</p>
+<p>三家运营商各有一好一普通两类骨干网，常见的路标如下：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-wrap"><table><thead><tr><th>运营商</th><th>线路</th><th>AS 号</th><th>IP 开头</th><th>档次</th></tr></thead><tbody><tr><td>电信</td><td>CN2</td><td>AS4809</td><td><code>59.43</code></td><td>高端</td></tr><tr><td>电信</td><td>163</td><td>AS4134</td><td><code>202.97</code></td><td>普通</td></tr><tr><td>联通</td><td>9929 / CUP</td><td>AS9929</td><td><code>218.105</code>、<code>210.51</code></td><td>高端</td></tr><tr><td>联通</td><td>4837</td><td>AS4837</td><td><code>219.158</code></td><td>普通</td></tr><tr><td>移动</td><td>CMIN2</td><td>AS58807</td><td><code>223.120.16</code> 到 <code>223.120.19</code></td><td>高端</td></tr><tr><td>移动</td><td>CMI</td><td>AS58453</td><td><code>223.118</code> 到 <code>223.121</code> 的其余部分</td><td>普通</td></tr></tbody></table></div>
+<p>CN2 GIA 是电信的线路，本文的重点因此是电信两行：看到 <code>59.43</code> 说明进了 CN2，看到 <code>202.97</code> 说明走的是 163。联通和移动的几行，留给三网用户对照自己的路由。</p>
+<p>如果还不清楚 CN2 和 163 是什么关系，可以先看<a href="/posts/what-is-cn2-gia/">CN2 GIA 是什么，为什么晚高峰也稳</a>。</p>
+<h2 id="测去程从国内追踪到-vps">测去程：从国内追踪到 VPS</h2>
+<p>去程是数据从国内到 VPS 的方向，也就是你访问网站、上传文件时走的路。它在国内就能测，不需要拥有那台机器，是下单前最实用的检查。</p>
+<p>最简单的方法是在自己电脑上追踪商家提供的测试 IP：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D"># Windows：打开命令提示符</span></span>
+<span class="line"><span style="color:#B392F0">tracert</span><span style="color:#9ECBFF"> 测试IP</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># macOS / Linux：打开终端</span></span>
+<span class="line"><span style="color:#B392F0">traceroute</span><span style="color:#9ECBFF"> 测试IP</span></span></code></pre>
+<p>不过，自己电脑测出的只是你所在运营商的去程。我更常用 ITDOG 的在线路由追踪，可以选择从国内某个城市的电信、联通或移动节点发起，不是电信宽带也能看电信的去程。</p>
+<p>下面是我从上海电信节点追踪一台洛杉矶 CN2 GIA VPS 的结果：</p>
+<p><img src="/_astro/cn2-gia-outbound-itdog-traceroute.WjAzjFYy_Z2hUQlm.webp" alt="从上海电信追踪洛杉矶 CN2 GIA VPS 的去程路由，上海电信接入后连续经过 59.43 开头的 CN2 节点" loading="lazy" decoding="async" width="1024" height="379"></p>
+<p>第 9 跳是上海电信的城域网，之后第 10 到 12 跳连续三个 <code>59.43</code> 节点，延迟只有 3 到 14 ms，这是国内段的 CN2。第 13 跳还是 <code>59.43</code>，延迟一下跳到 143 ms，说明已经跨过了太平洋。</p>
+<p>全程没有一个 <code>202.97</code>。</p>
+<p>这就是典型的 CN2 GIA 去程：从上海出发，到出国都在 CN2 上，最终到达洛杉矶的延迟约 130 ms。中间几行的局域网地址和星号是机房内部节点，不影响判断。</p>
+<p>想在下单前拿测试 IP 自己试一遍，可以看 <a href="/posts/dmit-test-ip/">DMIT 测试 IP 与 Looking Glass 的用法</a>。</p>
+<h2 id="测回程在-vps-上追踪回国内">测回程：在 VPS 上追踪回国内</h2>
+<p>回程是数据从 VPS 回到国内的方向。别人打开你的网站、下载文件，大部分流量走的都是回程，它对体验的影响往往比去程更大。</p>
+<p>回程必须从 VPS 这一端发起，要么已经买了机器，要么借助商家的测试工具。有些便宜的套餐只有回程走 CN2 GIA，这类线路够不够用，我在 <a href="/posts/hostdare-cn2-gia-review/">HostDare CN2 GIA 评测</a>里讲了。</p>
+<h3 id="一键脚本快速看三网回程">一键脚本：快速看三网回程</h3>
+<p>买了 VPS 之后，最省事的是运行开源脚本 backtrace。它会从 VPS 分别追踪北京、上海、广州、成都四地的电信、联通、移动，共 12 个目标，几秒钟给出结果：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">curl</span><span style="color:#9ECBFF"> https://raw.githubusercontent.com/zhanghanyun/backtrace/main/install.sh</span><span style="color:#79B8FF"> -sSf</span><span style="color:#F97583"> |</span><span style="color:#B392F0"> sh</span></span></code></pre>
+<p>脚本会下载一个程序放进系统目录，介意的话可以先到 <a href="https://github.com/zhanghanyun/backtrace" rel="noopener" target="_blank">GitHub 上的项目页</a>看看它的源码。</p>
+<p>下面是我在一台美国 CN2 VPS 上的测试结果：</p>
+<p><img src="/_astro/backtrace-three-network-cn2.CYWTAWCO_Z5gEmB.webp" alt="backtrace 三网回程测试结果，北京、上海、广州、成都的电信、联通、移动 12 个目标全部显示电信 CN2" loading="lazy" decoding="async" width="957" height="375"></p>
+<p>12 个目标全部显示“电信CN2 [优质线路]”，说明这台机器回国内三网都进了 CN2，联通和移动用户也走电信的高端网络。</p>
+<p>但这个结果只能说明进了 CN2，不能说明是 CN2 GIA。</p>
+<p>看过这个脚本的源码就知道：它只看路由里第一个能识别的节点，只要出现 <code>59.43</code>，就标成“电信CN2”。CN2 GT 的路由同样会先出现 <code>59.43</code>，所以 GT 和 GIA 在脚本里显示的是同一个结果。</p>
+<p>脚本适合快速筛一遍三网，要确认是不是 GIA，还得看完整的路由。</p>
+<h3 id="完整路由确认全程都是-cn2">完整路由：确认全程都是 CN2</h3>
+<p>完整路由用 <code>traceroute</code> 就能测。加上 <code>-A</code> 参数可以显示每一跳的 AS 号，判断起来更直观：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D"># Debian / Ubuntu 先安装</span></span>
+<span class="line"><span style="color:#B392F0">apt</span><span style="color:#9ECBFF"> install</span><span style="color:#79B8FF"> -y</span><span style="color:#9ECBFF"> traceroute</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 追踪到国内某个 IP，-q 1 表示每跳只探测一次</span></span>
+<span class="line"><span style="color:#B392F0">traceroute</span><span style="color:#79B8FF"> -A</span><span style="color:#79B8FF"> -q</span><span style="color:#79B8FF"> 1</span><span style="color:#9ECBFF"> 国内IP</span></span></code></pre>
+<p>目标 IP 可以直接用 backtrace 内置的那些，例如上海电信 <code>202.96.209.133</code>、上海联通 <code>210.22.97.1</code>、上海移动 <code>211.136.112.200</code>。NextTrace 这类工具还会标出每一跳的地理位置，读起来更方便。</p>
+<p>下面是我在 DMIT 洛杉矶 Pro 系列的机器上，追踪一个移动 IP 的回程：</p>
+<p><img src="/_astro/dmit-lax-pro-return-traceroute-mobile.C3x0NUAQ_1zeS9q.webp" alt="DMIT 洛杉矶 Pro 回程路由追踪到移动 IP，出机房后连续经过四个 59.43 开头的 CN2 节点，没有 202.97" loading="lazy" decoding="async" width="669" height="220"></p>
+<p>前两跳是 DMIT 机房的网关。第 3 跳是 <code>218.30</code> 开头的节点，虽然标着 AS4134，但延迟只有 0.6 ms，说明它还在洛杉矶，是电信在美国的接入点，不是国内的 163 骨干网。</p>
+<p>真正要看的是之后：第 4 到 7 跳连续四个 <code>59.43</code>，延迟从 124 ms 到 133 ms，数据在 CN2 上跨过太平洋进入国内，一路没有出现 <code>202.97</code>。</p>
+<p>目标是移动的 IP，回程却走电信的 CN2 GIA。</p>
+<p>这正是三网优化的意思：DMIT 洛杉矶 Pro 系列让电信、联通、移动的回程都走 CN2 GIA，三家用户都能拿到稳定的线路。各机房的线路和价格，可以看我的 <a href="/posts/dmit-review/">DMIT 评测</a>。</p>
+<h3 id="没买机器用-looking-glass">没买机器：用 Looking Glass</h3>
+<p>还没下单也能看回程。不少商家提供 Looking Glass 页面，可以在网页上直接从机房对任意 IP 发起路由追踪，效果和登录 VPS 测差不多。DMIT 的用法见上面提到的测试 IP 一文。</p>
+<h2 id="gia-还是-gt看-5943-之后交给了谁">GIA 还是 GT：看 59.43 之后交给了谁</h2>
+<p>这是判断真假 CN2 GIA 最关键的一步，也是最容易看错的地方。</p>
+<p>很多文章教人数 <code>59.43</code> 出现了几次，出现得多就是 GIA。这并不可靠：CN2 GT 的路由里同样可能有好几跳 <code>59.43</code>。真正的分界是，数据跨境进入国内之后，有没有把它交给 <code>202.97</code>。</p>
+<p>三种线路的路由特征如下：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-wrap"><table><thead><tr><th>线路</th><th>跨境段</th><th>进入国内后</th><th>路由里的样子</th></tr></thead><tbody><tr><td>CN2 GIA</td><td>CN2</td><td>继续走 CN2</td><td><code>59.43</code> 一路到底，没有 <code>202.97</code></td></tr><tr><td>CN2 GT</td><td>CN2</td><td>交给 163</td><td>先 <code>59.43</code>，再接 <code>202.97</code></td></tr><tr><td>163</td><td>163</td><td>163</td><td>只有 <code>202.97</code></td></tr></tbody></table></div>
+<p>判断 GT 有一个常见的标志：<code>59.43.245</code> 开头的节点后面紧接着 <code>202.97</code>。这一跳是 CN2 和 163 的衔接点，数据被交回了普通网络，前面出现过几次 <code>59.43</code> 都改变不了它是 GT 的事实。</p>
+<p>普通 163 线路是什么样子？下面是我从上海电信追踪 Vultr 韩国首尔的去程：</p>
+<p><img src="/_astro/vultr-seoul-163-itdog-traceroute.DgcKLIzU_Z2iBzYy.webp" alt="从上海电信追踪 Vultr 首尔的去程路由，经过两跳 202.97 开头的 163 骨干节点后交给 NTT，没有 59.43" loading="lazy" decoding="async" width="1556" height="637"></p>
+<p>出了上海电信，第 5、6 跳就是 <code>202.97</code>，全程看不到一个 <code>59.43</code>。出国后交给 NTT 的国际骨干网，再转到首尔机房，最后一跳的延迟在 244 ms 左右。</p>
+<p>首尔离上海比洛杉矶近得多，延迟却几乎是上面洛杉矶 CN2 GIA 的两倍。</p>
+<p>两张图不是同一时间测的，延迟只能作参考，但路由的结构一目了然：一个全程 <code>59.43</code>，一个全程 <code>202.97</code>。CN2 GT 介于两者之间，就是表格里先 <code>59.43</code> 再接 <code>202.97</code> 的样子。</p>
+<p>这里没有放 GT 的截图，因为现在单独卖 GT 的商家已经很少，我找不到能测的样本。GT 和 GIA 的区别和现状，见 <a href="/posts/what-is-cn2-gia/">CN2 GIA 是什么</a>。</p>
+<h2 id="读路由结果的五个误区">读路由结果的五个误区</h2>
+<p>认得了路标，结论仍然可能下错。下面这几种情况，是新手看路由时最常见的：</p>
+<ul>
+<li><strong>数 <code>59.43</code> 的次数</strong>：GT 也可能有好几跳 <code>59.43</code></li>
+<li><strong>只信一键脚本</strong>：脚本分不出 GT 和 GIA</li>
+<li><strong>中间节点丢包率高</strong>：多数是路由器限速，不是真丢包</li>
+<li><strong>看到星号就慌</strong>：节点不回应探测，跳过即可</li>
+<li><strong>只测一次、一个方向</strong>：线路会调整，去程回程也可能不同</li>
+</ul>
+<p>第三条最容易让人紧张。</p>
+<p>ITDOG 这类工具会显示每一跳的丢包率。上面洛杉矶 CN2 GIA 的截图里，中间几个 <code>59.43</code> 节点的丢包率高达 75% 到 93%，最后一跳却是 0%。</p>
+<p>路由器会优先转发数据，回应探测排在后面，中间节点丢包率高很正常。只看最后一跳就好。</p>
+<p>线路调整也是真实存在的事。同一家商家的线路，过几个月可能就变了，买了之后隔一段时间再测一次，比只相信下单时的结果更稳妥。</p>
+<h2 id="确认是-gia-之后再看丢包率">确认是 GIA 之后：再看丢包率</h2>
+<p>路由追踪回答的是“走哪条路”，不回答“这条路上堵不堵”。确认是 CN2 GIA 之后，还要看丢包率，它直接决定网站打开会不会卡、远程连接会不会断。</p>
+<p>我的做法是用 ping.pe 从国内多个节点连续 ping 100 次，看每个节点的丢包率和延迟波动。下面是搬瓦工洛杉矶 CN2 GIA 的结果：</p>
+<p><img src="/_astro/bandwagonhost-dc9-pingpe-loss.BaFY8Lig_Z1M6igo.webp" alt="搬瓦工洛杉矶 CN2 GIA 在 ping.pe 国内 12 个节点连续 ping 100 次，仅 1 个节点丢包 1%，其余为 0%" loading="lazy" decoding="async" width="1024" height="299"></p>
+<p>国内 12 个节点里，只有丽水电信丢了 1%，其余全部为 0，延迟的标准差最高也只有 3.45 ms。好的 CN2 GIA 就应该是这样：丢包几乎为零，延迟也不忽高忽低。</p>
+<p>如果晚高峰再测一次，丢包率依然接近零，这台机器就可以放心用了。普通线路在同样测试下是什么表现，可以对照 <a href="/posts/what-is-cn2-gia/">CN2 GIA 是什么</a>一文中的实测对比。</p>
+<h2 id="总结下单前测去程买后复查回程">总结：下单前测去程，买后复查回程</h2>
+<p>判断 VPS 是不是 CN2 GIA，看的是路由：<code>59.43</code> 一路把数据送进国内、不交给 <code>202.97</code>，才是 GIA；先 <code>59.43</code> 再 <code>202.97</code> 是 GT；只有 <code>202.97</code> 是普通线路。</p>
+<p>具体做法分三步。</p>
+<ul>
+<li>下单前，用 ITDOG 从电信节点追踪测试 IP，看去程；</li>
+<li>买了之后，先用 backtrace 快速看三网回程，再用 <code>traceroute -A</code> 看完整路由确认是 GIA；</li>
+<li>最后用 ping.pe 看丢包率，晚高峰再复查一次。</li>
+</ul>
+<p>商家的测试 IP 和退款期，就是用来做这件事的。可以从 <a href="/posts/dmit-review/">DMIT 评测</a>、<a href="/posts/bandwagonhost-cn2-gia/">搬瓦工 CN2 GIA 套餐总览</a>和 <a href="/posts/hostdare-cn2-gia-review/">HostDare CN2 GIA 评测</a>里挑一家，拿到测试 IP 先测一遍。</p>
+<div class="cta cta-summary"><p class="cta-eyebrow">DMIT</p><p class="cta-title">三网回程都走 CN2 GIA</p><p class="cta-desc">DMIT 洛杉矶 Pro 回程三网 CN2 GIA，去程电信 CN2 GIA、联通 CUP、移动 CMIN2。</p><ul class="cta-points"><li>三网回程 CN2 GIA</li><li>移动、联通用户也稳定</li><li>可先用测试 IP 验证</li></ul><a class="cta-action" href="/go/dmit/" rel="sponsored nofollow noopener" target="_blank">查看 DMIT 三网 CN2 GIA 套餐</a><p class="cta-note">联盟链接，通过它购买不会增加你的费用</p></div>
+<h2 id="常见问题">常见问题</h2>
+<h3 id="5943-和-20297-有什么区别">59.43 和 202.97 有什么区别？</h3>
+<p><code>59.43</code> 开头的 IP 属于电信的 CN2 骨干网（AS4809），<code>202.97</code> 开头的属于普通的 163 骨干网（AS4134）。路由里出现哪一种，就说明数据走的是哪张网。</p>
+<h3 id="路由里既有-5943-又有-20297-是什么线路">路由里既有 59.43 又有 202.97 是什么线路？</h3>
+<p>通常是 CN2 GT：跨境段走 CN2，进入国内后交给 163。典型的样子是 <code>59.43.245</code> 开头的节点后面接 <code>202.97</code>。它比纯 163 好，但晚高峰仍可能波动，不是 CN2 GIA。</p>
+<h3 id="backtrace-显示电信cn2就是-cn2-gia-吗">backtrace 显示“电信CN2”就是 CN2 GIA 吗？</h3>
+<p>不一定。backtrace 只要看到 <code>59.43</code> 就标成“电信CN2”，CN2 GT 也会这样显示。它能说明回程进了 CN2，要确认是 GIA，还需要用 <code>traceroute -A</code> 看完整路由里有没有 <code>202.97</code>。</p>
+<h3 id="联通和移动用户怎么判断线路好坏">联通和移动用户怎么判断线路好坏？</h3>
+<p>去程看自家运营商的高端线路：联通看 <code>218.105</code>、<code>210.51</code>（9929 / CUP），移动看 <code>223.120.16</code> 到 <code>223.120.19</code>（CMIN2）。回程如果全程走电信的 <code>59.43</code>，同样是很好的线路。</p>
+<h3 id="路由追踪中间节点丢包率很高是线路有问题吗">路由追踪中间节点丢包率很高，是线路有问题吗？</h3>
+<p>一般不是。路由器会优先转发数据，回应探测的优先级很低，所以中间节点常常显示很高的丢包率。只要最后一跳的丢包率接近 0%，线路就没有问题。</p>
+<h3 id="没有测试-ip-怎么办">没有测试 IP 怎么办？</h3>
+<p>可以向商家客服索要，或者使用商家的 Looking Glass 页面。两样都不提供的，建议先买月付套餐，在退款期内把去程、回程和丢包都测完再决定。</p>
+<h3 id="cn2-gia-会不会变成-cn2-gt">CN2 GIA 会不会变成 CN2 GT？</h3>
+<p>有可能。线路是电信和商家之间的合作，会随着合同和网络调整发生变化。买了之后隔一段时间复测一次路由，发现变成 GT 可以向商家反馈。</p></div><section class="related"><h2 class="section-title">相关文章</h2><ul class="post-list"><li><a class="post-list-title" href="/posts/bandwagonhost-cn2-gia-test/">搬瓦工 CN2 GIA 测试：各机房测试 IP 和实测结果</a><p class="post-list-desc">搬瓦工 CN2 GIA 测试：按官方 2026 年 10 月的机房清单整理 10 个 CN2 GIA 机房和测试 IP，附洛杉矶 DC9 和香港的延迟丢包实测、DC9 的去程路由，并与搬瓦工普通线路对照，教你看出是不是 CN2 GIA。</p><p class="meta"><time datetime="2026-11-09T00:00:00.000Z">2026年11月9日</time></p></li><li><a class="post-list-title" href="/posts/dmit-test-ip/">DMIT 测试 IP 汇总（2026 年 10 月核对）：去程回程怎么测</a><p class="post-list-desc">DMIT 测试 IP 汇总：洛杉矶、香港、东京 8 个地址，2026 年 10 月从官方 Looking Glass 核对。在本地测去程，在 lg.dmit.sh 测回程，附洛杉矶 Pro 的全国延迟、晚高峰丢包和回程路由实测。</p><p class="meta"><time datetime="2026-11-09T00:00:00.000Z">2026年11月9日</time></p></li><li><a class="post-list-title" href="/posts/vps-speed-test/">VPS 测速教程：延迟、丢包、带宽和回程路由怎么测（附实测）</a><p class="post-list-desc">VPS 测速教程：用一台香港 CN2 GIA VPS 的真实测试结果，讲清怎么测国内三网的延迟和丢包、回程路由、带宽和硬盘性能，每一项看哪个数字、什么结果算正常。</p><p class="meta"><time datetime="2026-11-09T00:00:00.000Z">2026年11月9日</time></p></li></ul></section></article></div><aside class="sidebar"><section class="widget"><h2 class="widget-title">推荐文章</h2><ol class="widget-list widget-ranked"><li><a href="/posts/what-is-cn2-gia/" title="CN2 GIA 是什么？电信高端线路为什么晚高峰也稳">CN2 GIA 是什么？电信高端线路为什么晚高峰也稳</a></li><li><a href="/posts/dmit-review/" title="DMIT 评测：Premium、Eyeball、Tier 1 怎么选，附洛杉矶去回程实测">DMIT 评测：Premium、Eyeball、Tier 1 怎么选，附洛杉矶去回程实测</a></li><li><a href="/posts/bandwagonhost-cn2-gia/" title="搬瓦工 CN2 GIA 套餐总览：哪些机房才是 CN2 GIA，各系列多少钱">搬瓦工 CN2 GIA 套餐总览：哪些机房才是 CN2 GIA，各系列多少钱</a></li></ol></section><nav class="widget toc toc-side" aria-label="目录"><h2 class="widget-title">目录</h2><ul><li class="toc-depth-2"><a href="#先认识路由里的路标ip-开头和-as-号">先认识路由里的“路标”：IP 开头和 AS 号</a></li><li class="toc-depth-2"><a href="#测去程从国内追踪到-vps">测去程：从国内追踪到 VPS</a></li><li class="toc-depth-2"><a href="#测回程在-vps-上追踪回国内">测回程：在 VPS 上追踪回国内</a></li><li class="toc-depth-3"><a href="#一键脚本快速看三网回程">一键脚本：快速看三网回程</a></li><li class="toc-depth-3"><a href="#完整路由确认全程都是-cn2">完整路由：确认全程都是 CN2</a></li><li class="toc-depth-3"><a href="#没买机器用-looking-glass">没买机器：用 Looking Glass</a></li><li class="toc-depth-2"><a href="#gia-还是-gt看-5943-之后交给了谁">GIA 还是 GT：看 59.43 之后交给了谁</a></li><li class="toc-depth-2"><a href="#读路由结果的五个误区">读路由结果的五个误区</a></li><li class="toc-depth-2"><a href="#确认是-gia-之后再看丢包率">确认是 GIA 之后：再看丢包率</a></li><li class="toc-depth-2"><a href="#总结下单前测去程买后复查回程">总结：下单前测去程，买后复查回程</a></li><li class="toc-depth-2"><a href="#常见问题">常见问题</a></li><li class="toc-depth-3"><a href="#5943-和-20297-有什么区别">59.43 和 202.97 有什么区别？</a></li><li class="toc-depth-3"><a href="#路由里既有-5943-又有-20297-是什么线路">路由里既有 59.43 又有 202.97 是什么线路？</a></li><li class="toc-depth-3"><a href="#backtrace-显示电信cn2就是-cn2-gia-吗">backtrace 显示“电信CN2”就是 CN2 GIA 吗？</a></li><li class="toc-depth-3"><a href="#联通和移动用户怎么判断线路好坏">联通和移动用户怎么判断线路好坏？</a></li><li class="toc-depth-3"><a href="#路由追踪中间节点丢包率很高是线路有问题吗">路由追踪中间节点丢包率很高，是线路有问题吗？</a></li><li class="toc-depth-3"><a href="#没有测试-ip-怎么办">没有测试 IP 怎么办？</a></li><li class="toc-depth-3"><a href="#cn2-gia-会不会变成-cn2-gt">CN2 GIA 会不会变成 CN2 GT？</a></li></ul></nav></aside></div></main><footer class="site-footer"><div class="container site-footer-inner"><nav aria-label="页脚导航"><a href="/archive/">全部文章</a><a href="/about/">关于</a><a href="/disclosure/">联盟披露</a><a href="/rss.xml">RSS</a></nav><p>© 2026 CN2 GIA VPS 指南。本站部分链接为联盟链接，通过它们购买不会增加你的费用。</p></div></footer><button class="back-to-top" id="back-to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button><script type="module">var e=document.getElementById(`site-header`),t=document.getElementById(`back-to-top`),n=window.scrollY;function r(){let r=window.scrollY;Math.abs(r-n)>4&&(e.classList.toggle(`is-hidden`,r>n&&r>120),n=r),e.classList.toggle(`is-scrolled`,r>8),t.classList.toggle(`is-visible`,r>300)}window.addEventListener(`scroll`,r,{passive:!0}),t.addEventListener(`click`,()=>window.scrollTo({top:0,behavior:`smooth`})),r();</script></body></html>

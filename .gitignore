@@ -1,0 +1,9 @@
+# 白名单：这个文件夹同时是工作项目和 GitHub Pages 仓库，只提交下面几项（2026-10-31）
+# 其余（站点源码、配置、调研、计划、日志、PROJECT.md、CLAUDE.md）都不提交
+/*
+!/.gitignore
+!/README.md
+!/.github/
+!/site/
+/site/*
+!/site/dist/

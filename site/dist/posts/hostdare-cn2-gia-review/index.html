@@ -1,0 +1,97 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>HostDare CN2 GIA 评测：仅回程的低价线路，日常够不够用 | CN2 GIA VPS 指南</title><meta name="description" content="HostDare CN2 GIA 评测：洛杉矶机房，回程三网优化、去程走普通线路，CSSD1 每年约 61 美元。用实测的延迟、丢包和回程路由，说明仅回程的线路日常够不够用、适合谁。"><link rel="canonical" href="https://fast-cn2gia.github.io/posts/hostdare-cn2-gia-review/"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="alternate" type="application/rss+xml" title="CN2 GIA VPS 指南" href="/rss.xml"><link rel="sitemap" href="/sitemap-index.xml"><meta property="og:type" content="article"><meta property="og:site_name" content="CN2 GIA VPS 指南"><meta property="og:title" content="HostDare CN2 GIA 评测：仅回程的低价线路，日常够不够用"><meta property="og:description" content="HostDare CN2 GIA 评测：洛杉矶机房，回程三网优化、去程走普通线路，CSSD1 每年约 61 美元。用实测的延迟、丢包和回程路由，说明仅回程的线路日常够不够用、适合谁。"><meta property="og:url" content="https://fast-cn2gia.github.io/posts/hostdare-cn2-gia-review/"><meta property="og:locale" content="zh_CN"><meta name="twitter:card" content="summary"><script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"HostDare CN2 GIA 评测：仅回程的低价线路，日常够不够用","description":"HostDare CN2 GIA 评测：洛杉矶机房，回程三网优化、去程走普通线路，CSSD1 每年约 61 美元。用实测的延迟、丢包和回程路由，说明仅回程的线路日常够不够用、适合谁。","datePublished":"2026-11-09T00:00:00.000Z","dateModified":"2026-11-09T00:00:00.000Z","author":{"@type":"Person","name":"站长"},"publisher":{"@type":"Organization","name":"CN2 GIA VPS 指南"},"mainEntityOfPage":"https://fast-cn2gia.github.io/posts/hostdare-cn2-gia-review/","inLanguage":"zh-CN"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://fast-cn2gia.github.io/"},{"@type":"ListItem","position":2,"name":"评测","item":"https://fast-cn2gia.github.io/category/review/"},{"@type":"ListItem","position":3,"name":"HostDare CN2 GIA 评测：仅回程的低价线路，日常够不够用","item":"https://fast-cn2gia.github.io/posts/hostdare-cn2-gia-review/"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"HostDare 的 CN2 GIA 是双向的吗？","acceptedAnswer":{"@type":"Answer","text":"不是。回程三网优化，电信回程走 CN2 GIA，去程走普通线路。打开网页、下载这类以回程为主的使用影响不大，大量上传会受影响。"}},{"@type":"Question","name":"HostDare 支持联通和移动吗？","acceptedAnswer":{"@type":"Answer","text":"支持，但两家不一样。联通回程走 CUP，我实测北京、上海、广州显示 9929；移动回程走 CMI，不是更高一档的 CMIN2。"}},{"@type":"Question","name":"HostDare 套餐怎么选？","acceptedAnswer":{"@type":"Answer","text":"推荐 CSSD1。三个系列线路相同，CSSD 用 NVMe，比 HDD 的 CKVM 快，又比 AMD 的 CAMD 便宜一点；最便宜的 CSSD0 已经没货了，带宽也只有 30 Mbps。"}},{"@type":"Question","name":"HostDare 有测试 IP 吗？","acceptedAnswer":{"@type":"Answer","text":"我没有在官网的 CN2 GIA 产品页上找到测试 IP，买了之后再测。退款期只有 3 天，到手后尽快按上文的方法，把延迟、丢包和回程路由测完。"}},{"@type":"Question","name":"HostDare 可以退款吗？","acceptedAnswer":{"@type":"Answer","text":"可以，但只有 3 天，还有条件，细节见上文“缺点和替代选择”。测试时注意别跑太多流量，当月用掉 20% 以上可能被拒。"}},{"@type":"Question","name":"HostDare 和搬瓦工怎么选？","acceptedAnswer":{"@type":"Answer","text":"看预算和方向。HostDare 便宜，只有回程优化；搬瓦工洛杉矶 DC9、DC6 是双向 CN2 GIA，按 2026 年 10 月官网价格，DC9 入门款每 3 个月 89.99 美元，比 HostDare 贵得多，换来两个方向都稳定。"}}]}</script><style>.note[data-astro-cid-2nmadbt7]{border-left:4px solid var(--note-accent);background:var(--note-bg);border-radius:0 6px 6px 0;margin:1.5em 0;padding:.75em 1em;font-size:.88em;line-height:1.7}.note-tip[data-astro-cid-2nmadbt7]{--note-accent:#7a93ac;--note-bg:#7a93ac1a}.note-warning[data-astro-cid-2nmadbt7]{--note-accent:#d9a21b;--note-bg:#d9a21b1a}.note-title[data-astro-cid-2nmadbt7]{margin:0 0 .25em;font-weight:600}.note[data-astro-cid-2nmadbt7] p{margin:0}.note[data-astro-cid-2nmadbt7] p+p{margin-top:.5em}
+</style><link rel="stylesheet" href="/_astro/Base.BEzORkuK.css"></head><body><header class="site-header" id="site-header"><div class="container site-header-inner"><a class="site-name" href="/"><svg class="site-logo" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="currentColor"></rect><path d="M8 21h16M8 16h10M8 11h16" stroke="#fff" stroke-width="2.5" stroke-linecap="round"></path></svg>CN2 GIA VPS 指南</a><nav class="site-nav" aria-label="主导航"><a href="/category/basics/">基础知识</a><a href="/category/tutorial/">教程</a><a href="/category/review/" aria-current="page">评测</a><a href="/category/recommend/">推荐</a></nav></div></header><main class="container"><div class="layout"><div class="layout-main"><article class="post"><nav class="breadcrumb" aria-label="面包屑"><a href="/">首页</a><span aria-hidden="true">/</span><a href="/category/review/">评测</a></nav><h1>HostDare CN2 GIA 评测：仅回程的低价线路，日常够不够用</h1><p class="meta"><span>站长</span><time datetime="2026-11-09T00:00:00.000Z">发布于 2026年11月9日</time></p><details class="toc toc-inline"><summary>目录</summary><ul><li class="toc-depth-2"><a href="#hostdare-的-cn2-gia-是哪一种">HostDare 的 CN2 GIA 是哪一种</a></li><li class="toc-depth-2"><a href="#实测延迟和丢包">实测：延迟和丢包</a></li><li class="toc-depth-2"><a href="#带宽和硬件800-mbps-不是回国带宽">带宽和硬件：800 Mbps 不是回国带宽</a></li><li class="toc-depth-2"><a href="#仅回程够不够用">仅回程够不够用</a></li><li class="toc-depth-2"><a href="#hostdare-套餐怎么选">HostDare 套餐怎么选</a></li><li class="toc-depth-2"><a href="#缺点和替代选择">缺点和替代选择</a></li><li class="toc-depth-2"><a href="#总结预算有限时的回程优化选择">总结：预算有限时的回程优化选择</a></li><li class="toc-depth-2"><a href="#常见问题">常见问题</a></li><li class="toc-depth-3"><a href="#hostdare-的-cn2-gia-是双向的吗">HostDare 的 CN2 GIA 是双向的吗？</a></li><li class="toc-depth-3"><a href="#hostdare-支持联通和移动吗">HostDare 支持联通和移动吗？</a></li><li class="toc-depth-3"><a href="#hostdare-套餐怎么选-1">HostDare 套餐怎么选？</a></li><li class="toc-depth-3"><a href="#hostdare-有测试-ip-吗">HostDare 有测试 IP 吗？</a></li><li class="toc-depth-3"><a href="#hostdare-可以退款吗">HostDare 可以退款吗？</a></li><li class="toc-depth-3"><a href="#hostdare-和搬瓦工怎么选">HostDare 和搬瓦工怎么选？</a></li></ul></details><div class="prose"><p>HostDare CN2 GIA 评测的结论先说：它是一条便宜的回程优化线路，回程三网优化，去程不是 CN2 GIA。测出来的丢包有波动，但我日常用下来很稳定。</p>
+<p>需要去程也稳定的，比如经常从国内往服务器上传大量数据，还是选双向 CN2 GIA 更合适，可以看 <a href="/posts/dmit-review/">DMIT 评测</a>和<a href="/posts/bandwagonhost-cn2-gia/">搬瓦工 CN2 GIA 套餐总览</a>。</p>
+<h2 id="hostdare-的-cn2-gia-是哪一种">HostDare 的 CN2 GIA 是哪一种</h2>
+<p>HostDare 的 CN2 GIA 都在洛杉矶，产品页写的是“CN2 GIA, CU, CM optimized network”，指的就是三网回程：电信 CN2 GIA、联通 CUP、移动 CMI。我用 backtrace 测了一次：</p>
+<p><img src="/_astro/hostdare-backtrace-return-route.IU8ljwOW_2bP7Kn.webp" alt="HostDare 洛杉矶 VPS 的 backtrace 三网回程测试，电信四个城市都是 CN2，联通北京、上海、广州是 9929，移动显示 CMI" loading="lazy" decoding="async" width="563" height="311"></p>
+<p>电信 4 个城市都是 CN2，不过 backtrace 只能看出进没进 CN2，分不出 GIA 和 GT，逐跳的判断方法见<a href="/posts/how-to-check-cn2-gia-route/">怎么判断 VPS 是不是 CN2 GIA</a>。</p>
+<p>联通北京、上海、广州显示为 9929，这是联通的高端线路，有的商家写作 CUP；只有成都是普通的 4837。</p>
+<p>移动 4 个城市都是 CMI，和产品页的说法一致。backtrace 把它标成普通线路，是因为它不是更高一档的 CMIN2，移动用户要心里有数。</p>
+<p>“仅回程”影响什么，要分方向看。</p>
+<p>回程是服务器发给你的数据，打开网页、下载文件、看远程画面，走的主要是这个方向。去程是你发给服务器的数据，上传文件、提交表单、SSH 里敲下的字符，走的是普通线路。</p>
+<p>所以只是访问网站的话，体验主要取决于回程。</p>
+<h2 id="实测延迟和丢包">实测：延迟和丢包</h2>
+<p>下面的数据是 2025 年在 CSSD0 上测的。先看 ITDOG 的全国延迟，162 个监测点：</p>
+<p><img src="/_astro/hostdare-itdog-ping.fmV8uGpL_1edPY8.webp" alt="ITDOG 全国 162 个监测点 ping HostDare 洛杉矶 VPS，全国平均 168 ms，电信 165 ms、联通 169 ms、移动 170 ms" loading="lazy" decoding="async" width="1024" height="460"></p>
+<p>全国平均 168 ms，电信 165 ms、联通 169 ms、移动 170 ms，三网很均衡。再看丢包，下午用 ping.pe 让国内 13 个节点各 ping 100 次：</p>
+<p><img src="/_astro/hostdare-pingpe-china-loss.DHD-hrqz_1TiIWj.webp" alt="ping.pe 国内 13 个节点各 ping HostDare 洛杉矶 VPS 100 次，7 个节点零丢包，广州腾讯 16%、青岛阿里云 17%、成都腾讯 11%" loading="lazy" decoding="async" width="1024" height="315"></p>
+<p>13 个节点里 7 个没有丢包，但广州腾讯丢了 16%，青岛阿里云 17%，成都腾讯 11%。丽水三网的平均延迟正常，最坏一次却到了 296 到 455 ms，右侧的曲线上也能看到零星的尖峰。</p>
+<p>我认为这和仅回程有关。作为对照，我在<a href="/posts/bandwagonhost-cn2-gia-test/">搬瓦工 CN2 GIA 测试</a>里测过的洛杉矶 DC9 是双向 CN2 GIA，国内 12 个节点只有 1 个丢了 1%。</p>
+<p>两组的节点和测试时间并不完全相同，不能逐项对比，但双向的那组明显干净。我的判断是去程的影响比较大：ping 是一来一回，去程那一半走的是普通线路。</p>
+<h2 id="带宽和硬件800-mbps-不是回国带宽">带宽和硬件：800 Mbps 不是回国带宽</h2>
+<p>很多评测会贴 bench.sh 的结果，我测的这台也跑出了不错的数字：</p>
+<p><img src="/_astro/hostdare-bench-sh.shRqSERf_ZyldIS.webp" alt="bench.sh 测试 HostDare 洛杉矶 VPS，Speedtest.net 上传约 838 Mbps、下载约 929 Mbps" loading="lazy" decoding="async" width="645" height="879"></p>
+<p>Speedtest.net 上传约 838 Mbps、下载约 929 Mbps，测速节点就在美国当地，这是机器在美国本地的带宽。回国方向按套餐限速，CSSD0 是 30 Mbps，CSSD1 是 50 Mbps。</p>
+<p>买之前看清套餐页标的端口带宽（Uplink speed），那才是回国方向能用到的上限。</p>
+<p>硬件方面，硬盘 I/O 平均 859 MB/s，4K 随机写约 9.4 万 IOPS、随机读约 5600 IOPS，对这个价位来说够用。更多测试项目的读法，见 <a href="/posts/vps-speed-test/">VPS 测速教程</a>。</p>
+<h2 id="仅回程够不够用">仅回程够不够用</h2>
+<p>测试数据有波动，但我日常用下来，感受是非常稳定的。我认为原因在于方向：日常访问的大部分流量走回程，而回程是优化过的，测试里的波动主要来自去程那一半。</p>
+<p>按使用场景，我的判断如下：</p>
+<ul>
+<li>建站给国内访客看：够用，访客浏览走的是回程</li>
+<li>远程登录管理服务器：敲命令走去程，偶尔可能卡一下</li>
+<li>经常从国内往服务器上传大文件：去程是普通线路，高峰时段可能慢</li>
+<li>对两个方向的稳定性都有要求：选双向 CN2 GIA</li>
+</ul>
+<p>判断时问自己一句：数据主要是从服务器流向国内，还是从国内流向服务器。前者仅回程就够，后者才值得为双向多花钱。</p>
+<h2 id="hostdare-套餐怎么选">HostDare 套餐怎么选</h2>
+<p>HostDare 的 CN2 GIA 有三个系列，线路相同，区别在硬盘和处理器：CKVM 是 HDD，CSSD 是 NVMe，CAMD 是 AMD 处理器加 NVMe。下面是 2026 年 10 月官网的入门款：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-wrap"><table><thead><tr><th>套餐</th><th>配置</th><th>回国带宽</th><th>价格</th></tr></thead><tbody><tr><td>CKVM1</td><td>1 核、756 MB、35 GB HDD</td><td>50 Mbps</td><td>$55.99 / 年</td></tr><tr><td>CSSD1</td><td>1 核、1 GB、25 GB NVMe</td><td>50 Mbps</td><td>$60.99 / 年</td></tr><tr><td>CAMD1</td><td>1 核、1 GB、25 GB NVMe（AMD）</td><td>50 Mbps</td><td>$65.99 / 年</td></tr></tbody></table></div>
+<p>我推荐 CSSD1。比 CKVM1 只贵 5 美元，换来 NVMe 硬盘和多一点内存，装软件、跑数据库这类小文件读写会快得多，代价是硬盘从 35 GB 降到 25 GB；CSSD0 虽然更便宜，但已经没货了，带宽也只有 30 Mbps。</p>
+<div class="cta cta-box"><div class="cta-body"><p class="cta-title">HostDare CN2 GIA 套餐</p><p class="cta-desc">洛杉矶机房，回程三网优化，三个系列线路相同。</p></div><a class="cta-action" href="/go/hostdare/" rel="sponsored nofollow noopener" target="_blank">查看 HostDare 套餐</a></div>
+<h2 id="缺点和替代选择">缺点和替代选择</h2>
+<p>HostDare 便宜，代价也很明确，买之前要清楚下面几点：</p>
+<ul>
+<li>去程不是 CN2 GIA，测试中的丢包有波动</li>
+<li>移动回程走 CMI，不是更高一档的 CMIN2</li>
+<li>只有洛杉矶机房</li>
+<li>退款期只有 3 天，还有条件</li>
+</ul>
+<p>官网的退款说明是：3 天内、有正当理由才可以退，会扣 0.5 到 1 美元手续费，当月流量用了 20% 以上可能被拒。所以到手后要在 3 天内把测试做完，并且少跑流量。</p>
+<p>HostDare 三个系列线路相同，换系列解决不了去程的问题。需要双向 CN2 GIA 的，可以看 DMIT 或搬瓦工，下单前用 <a href="/posts/dmit-test-ip/">DMIT 测试 IP</a> 或<a href="/posts/bandwagonhost-cn2-gia-test/">搬瓦工 CN2 GIA 测试</a>里的方法测一遍，比较丢包率和去程是否走 <code>59.43</code>。</p>
+<h2 id="总结预算有限时的回程优化选择">总结：预算有限时的回程优化选择</h2>
+<p>HostDare 用很低的价格提供了回程三网优化。测试中的丢包波动是真实的，但我日常用下来很稳定，预算有限推荐 CSSD1。</p>
+<p>经常从国内上传数据、两个方向都有要求的，多花点钱买双向。</p>
+<div class="cta cta-summary"><p class="cta-eyebrow">HostDare</p><p class="cta-title">预算有限、以访问为主？HostDare 够用</p><p class="cta-desc">洛杉矶机房，回程三网优化，入门款价格很低。</p><ul class="cta-points"><li>回程电信 CN2，联通多数城市走 9929</li><li>NVMe 硬盘可选</li><li>日常使用稳定</li></ul><a class="cta-action" href="/go/hostdare/" rel="sponsored nofollow noopener" target="_blank">查看 HostDare 套餐</a><p class="cta-note">联盟链接，通过它购买不会增加你的费用</p></div>
+<h2 id="常见问题">常见问题</h2>
+<h3 id="hostdare-的-cn2-gia-是双向的吗">HostDare 的 CN2 GIA 是双向的吗？</h3>
+<p>不是。回程三网优化，电信回程走 CN2 GIA，去程走普通线路。打开网页、下载这类以回程为主的使用影响不大，大量上传会受影响。</p>
+<h3 id="hostdare-支持联通和移动吗">HostDare 支持联通和移动吗？</h3>
+<p>支持，但两家不一样。联通回程走 CUP，我实测北京、上海、广州显示 9929；移动回程走 CMI，不是更高一档的 CMIN2。</p>
+<h3 id="hostdare-套餐怎么选-1">HostDare 套餐怎么选？</h3>
+<p>推荐 CSSD1。三个系列线路相同，CSSD 用 NVMe，比 HDD 的 CKVM 快，又比 AMD 的 CAMD 便宜一点；最便宜的 CSSD0 已经没货了，带宽也只有 30 Mbps。</p>
+<h3 id="hostdare-有测试-ip-吗">HostDare 有测试 IP 吗？</h3>
+<p>我没有在官网的 CN2 GIA 产品页上找到测试 IP，买了之后再测。退款期只有 3 天，到手后尽快按上文的方法，把延迟、丢包和回程路由测完。</p>
+<h3 id="hostdare-可以退款吗">HostDare 可以退款吗？</h3>
+<p>可以，但只有 3 天，还有条件，细节见上文“缺点和替代选择”。测试时注意别跑太多流量，当月用掉 20% 以上可能被拒。</p>
+<h3 id="hostdare-和搬瓦工怎么选">HostDare 和搬瓦工怎么选？</h3>
+<p>看预算和方向。HostDare 便宜，只有回程优化；搬瓦工洛杉矶 DC9、DC6 是双向 CN2 GIA，按 2026 年 10 月官网价格，DC9 入门款每 3 个月 89.99 美元，比 HostDare 贵得多，换来两个方向都稳定。</p></div><section class="related"><h2 class="section-title">相关文章</h2><ul class="post-list"><li><a class="post-list-title" href="/posts/dmit-review/">DMIT 评测：Premium、Eyeball、Tier 1 怎么选，附洛杉矶去回程实测</a><p class="post-list-desc">DMIT 评测：按官网 2026 年 10 月的价格讲清 Premium（Pro）、Eyeball、Tier 1 三条产品线的区别，附洛杉矶 Premium 的去程、三网回程、延迟和性能实测，以及换 IP、退款规则和不适合谁。</p><p class="meta"><time datetime="2026-11-09T00:00:00.000Z">2026年11月9日</time></p></li></ul></section></article></div><aside class="sidebar"><section class="widget"><h2 class="widget-title">推荐文章</h2><ol class="widget-list widget-ranked"><li><a href="/posts/what-is-cn2-gia/" title="CN2 GIA 是什么？电信高端线路为什么晚高峰也稳">CN2 GIA 是什么？电信高端线路为什么晚高峰也稳</a></li><li><a href="/posts/dmit-review/" title="DMIT 评测：Premium、Eyeball、Tier 1 怎么选，附洛杉矶去回程实测">DMIT 评测：Premium、Eyeball、Tier 1 怎么选，附洛杉矶去回程实测</a></li><li><a href="/posts/bandwagonhost-cn2-gia/" title="搬瓦工 CN2 GIA 套餐总览：哪些机房才是 CN2 GIA，各系列多少钱">搬瓦工 CN2 GIA 套餐总览：哪些机房才是 CN2 GIA，各系列多少钱</a></li></ol></section><nav class="widget toc toc-side" aria-label="目录"><h2 class="widget-title">目录</h2><ul><li class="toc-depth-2"><a href="#hostdare-的-cn2-gia-是哪一种">HostDare 的 CN2 GIA 是哪一种</a></li><li class="toc-depth-2"><a href="#实测延迟和丢包">实测：延迟和丢包</a></li><li class="toc-depth-2"><a href="#带宽和硬件800-mbps-不是回国带宽">带宽和硬件：800 Mbps 不是回国带宽</a></li><li class="toc-depth-2"><a href="#仅回程够不够用">仅回程够不够用</a></li><li class="toc-depth-2"><a href="#hostdare-套餐怎么选">HostDare 套餐怎么选</a></li><li class="toc-depth-2"><a href="#缺点和替代选择">缺点和替代选择</a></li><li class="toc-depth-2"><a href="#总结预算有限时的回程优化选择">总结：预算有限时的回程优化选择</a></li><li class="toc-depth-2"><a href="#常见问题">常见问题</a></li><li class="toc-depth-3"><a href="#hostdare-的-cn2-gia-是双向的吗">HostDare 的 CN2 GIA 是双向的吗？</a></li><li class="toc-depth-3"><a href="#hostdare-支持联通和移动吗">HostDare 支持联通和移动吗？</a></li><li class="toc-depth-3"><a href="#hostdare-套餐怎么选-1">HostDare 套餐怎么选？</a></li><li class="toc-depth-3"><a href="#hostdare-有测试-ip-吗">HostDare 有测试 IP 吗？</a></li><li class="toc-depth-3"><a href="#hostdare-可以退款吗">HostDare 可以退款吗？</a></li><li class="toc-depth-3"><a href="#hostdare-和搬瓦工怎么选">HostDare 和搬瓦工怎么选？</a></li></ul></nav></aside></div></main><footer class="site-footer"><div class="container site-footer-inner"><nav aria-label="页脚导航"><a href="/archive/">全部文章</a><a href="/about/">关于</a><a href="/disclosure/">联盟披露</a><a href="/rss.xml">RSS</a></nav><p>© 2026 CN2 GIA VPS 指南。本站部分链接为联盟链接，通过它们购买不会增加你的费用。</p></div></footer><button class="back-to-top" id="back-to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button><script type="module">var e=document.getElementById(`site-header`),t=document.getElementById(`back-to-top`),n=window.scrollY;function r(){let r=window.scrollY;Math.abs(r-n)>4&&(e.classList.toggle(`is-hidden`,r>n&&r>120),n=r),e.classList.toggle(`is-scrolled`,r>8),t.classList.toggle(`is-visible`,r>300)}window.addEventListener(`scroll`,r,{passive:!0}),t.addEventListener(`click`,()=>window.scrollTo({top:0,behavior:`smooth`})),r();</script></body></html>

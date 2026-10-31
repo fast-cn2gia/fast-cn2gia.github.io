@@ -1,0 +1,228 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>VPS 测速教程：延迟、丢包、带宽和回程路由怎么测（附实测） | CN2 GIA VPS 指南</title><meta name="description" content="VPS 测速教程：用一台香港 CN2 GIA VPS 的真实测试结果，讲清怎么测国内三网的延迟和丢包、回程路由、带宽和硬盘性能，每一项看哪个数字、什么结果算正常。"><link rel="canonical" href="https://fast-cn2gia.github.io/posts/vps-speed-test/"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="alternate" type="application/rss+xml" title="CN2 GIA VPS 指南" href="/rss.xml"><link rel="sitemap" href="/sitemap-index.xml"><meta property="og:type" content="article"><meta property="og:site_name" content="CN2 GIA VPS 指南"><meta property="og:title" content="VPS 测速教程：延迟、丢包、带宽和回程路由怎么测（附实测）"><meta property="og:description" content="VPS 测速教程：用一台香港 CN2 GIA VPS 的真实测试结果，讲清怎么测国内三网的延迟和丢包、回程路由、带宽和硬盘性能，每一项看哪个数字、什么结果算正常。"><meta property="og:url" content="https://fast-cn2gia.github.io/posts/vps-speed-test/"><meta property="og:locale" content="zh_CN"><meta name="twitter:card" content="summary"><script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"VPS 测速教程：延迟、丢包、带宽和回程路由怎么测（附实测）","description":"VPS 测速教程：用一台香港 CN2 GIA VPS 的真实测试结果，讲清怎么测国内三网的延迟和丢包、回程路由、带宽和硬盘性能，每一项看哪个数字、什么结果算正常。","datePublished":"2026-11-09T00:00:00.000Z","dateModified":"2026-11-09T00:00:00.000Z","author":{"@type":"Person","name":"站长"},"publisher":{"@type":"Organization","name":"CN2 GIA VPS 指南"},"mainEntityOfPage":"https://fast-cn2gia.github.io/posts/vps-speed-test/","inLanguage":"zh-CN"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://fast-cn2gia.github.io/"},{"@type":"ListItem","position":2,"name":"教程","item":"https://fast-cn2gia.github.io/category/tutorial/"},{"@type":"ListItem","position":3,"name":"VPS 测速教程：延迟、丢包、带宽和回程路由怎么测（附实测）","item":"https://fast-cn2gia.github.io/posts/vps-speed-test/"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"一键测速脚本安全吗？","acceptedAnswer":{"@type":"Answer","text":"大多数常用脚本是开源的，可以在项目页看到源码。但它们都以 root 权限运行，运行前要确认来源，尽量在新开或专门测试的机器上运行，不要在跑着正式业务的服务器上随手执行。"}},{"@type":"Question","name":"VPS 测速要在晚上测吗？","acceptedAnswer":{"@type":"Answer","text":"要。晚上 8 点到 11 点是国际出口最拥挤的时候，普通线路的问题大多在这时出现。中午测得再好，也要在晚上再测一次。"}},{"@type":"Question","name":"没买 VPS 能测速吗？","acceptedAnswer":{"@type":"Answer","text":"能测一部分。用商家提供的测试 IP，可以在网页工具上测三网延迟、丢包和去程路由。回程路由、带宽和硬件要在 VPS 上测，只能买了之后测。"}},{"@type":"Question","name":"回程路由怎么看？","acceptedAnswer":{"@type":"Answer","text":"在 VPS 上运行 backtrace，看三网各显示什么线路：电信看是不是 CN2，联通看 9929 还是 4837，移动看 CMIN2 还是 CMI、163。要区分 CN2 GIA 和 GT，需要看完整路由里 59.43 之后有没有出现 202.97。"}},{"@type":"Question","name":"bench.sh 的下载速度为什么这么低？","acceptedAnswer":{"@type":"Answer","text":"bench.sh 的“下载”是测速节点发给 VPS 的速度，也就是入站。入站通常按套餐带宽限速，这台套餐是 50 Mbps，测出来也正好是这个数。访客打开网站走的是出站，要看“上传”那一列。"}},{"@type":"Question","name":"speedtest 和 iperf3 有什么区别？","acceptedAnswer":{"@type":"Answer","text":"speedtest 测的是 VPS 到某个测速节点的速度，适合看 VPS 本身的带宽。iperf3 测的是两台机器之间的速度，适合看你家到 VPS 实际能跑多快，但结果受你自己宽带的限制。"}},{"@type":"Question","name":"原生 IP 和广播 IP 有什么区别？","acceptedAnswer":{"@type":"Answer","text":"原生 IP 的注册地和实际所在地一致，广播 IP 注册在一个国家、实际用在另一个国家。广播 IP 可能被部分网站判断成错误的地区，做外贸、注册海外平台时原生 IP 更省心。"}},{"@type":"Question","name":"fio 测出的随机写为什么特别高？","acceptedAnswer":{"@type":"Answer","text":"多半是没有加 --direct=1，数据写进了系统缓存，测出的是内存的速度。加上这个参数再测，结果才能和其他机器对比。"}}]}</script><style>.note[data-astro-cid-2nmadbt7]{border-left:4px solid var(--note-accent);background:var(--note-bg);border-radius:0 6px 6px 0;margin:1.5em 0;padding:.75em 1em;font-size:.88em;line-height:1.7}.note-tip[data-astro-cid-2nmadbt7]{--note-accent:#7a93ac;--note-bg:#7a93ac1a}.note-warning[data-astro-cid-2nmadbt7]{--note-accent:#d9a21b;--note-bg:#d9a21b1a}.note-title[data-astro-cid-2nmadbt7]{margin:0 0 .25em;font-weight:600}.note[data-astro-cid-2nmadbt7] p{margin:0}.note[data-astro-cid-2nmadbt7] p+p{margin-top:.5em}
+</style><link rel="stylesheet" href="/_astro/Base.BEzORkuK.css"></head><body><header class="site-header" id="site-header"><div class="container site-header-inner"><a class="site-name" href="/"><svg class="site-logo" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="currentColor"></rect><path d="M8 21h16M8 16h10M8 11h16" stroke="#fff" stroke-width="2.5" stroke-linecap="round"></path></svg>CN2 GIA VPS 指南</a><nav class="site-nav" aria-label="主导航"><a href="/category/basics/">基础知识</a><a href="/category/tutorial/" aria-current="page">教程</a><a href="/category/review/">评测</a><a href="/category/recommend/">推荐</a></nav></div></header><main class="container"><div class="layout"><div class="layout-main"><article class="post"><nav class="breadcrumb" aria-label="面包屑"><a href="/">首页</a><span aria-hidden="true">/</span><a href="/category/tutorial/">教程</a></nav><h1>VPS 测速教程：延迟、丢包、带宽和回程路由怎么测（附实测）</h1><p class="meta"><span>站长</span><time datetime="2026-11-09T00:00:00.000Z">发布于 2026年11月9日</time></p><details class="toc toc-inline"><summary>目录</summary><ul><li class="toc-depth-2"><a href="#先分清哪些买前能测哪些买后才能测">先分清：哪些买前能测，哪些买后才能测</a></li><li class="toc-depth-2"><a href="#第一步测国内三网的延迟和丢包">第一步：测国内三网的延迟和丢包</a></li><li class="toc-depth-2"><a href="#第二步测回程路由看三网各走什么线">第二步：测回程路由，看三网各走什么线</a></li><li class="toc-depth-2"><a href="#第三步测带宽先弄清测的是哪个方向">第三步：测带宽，先弄清测的是哪个方向</a></li><li class="toc-depth-2"><a href="#第四步看配置cpu-和硬盘">第四步：看配置、CPU 和硬盘</a></li><li class="toc-depth-2"><a href="#第五步看-ip-质量是不是原生-ip">第五步：看 IP 质量，是不是原生 IP</a></li><li class="toc-depth-2"><a href="#这台香港-vps-测下来怎么样">这台香港 VPS 测下来怎么样</a></li><li class="toc-depth-2"><a href="#总结买前测线路买后测带宽和硬件">总结：买前测线路，买后测带宽和硬件</a></li><li class="toc-depth-2"><a href="#常见问题">常见问题</a></li><li class="toc-depth-3"><a href="#一键测速脚本安全吗">一键测速脚本安全吗？</a></li><li class="toc-depth-3"><a href="#vps-测速要在晚上测吗">VPS 测速要在晚上测吗？</a></li><li class="toc-depth-3"><a href="#没买-vps-能测速吗">没买 VPS 能测速吗？</a></li><li class="toc-depth-3"><a href="#回程路由怎么看">回程路由怎么看？</a></li><li class="toc-depth-3"><a href="#benchsh-的下载速度为什么这么低">bench.sh 的下载速度为什么这么低？</a></li><li class="toc-depth-3"><a href="#speedtest-和-iperf3-有什么区别">speedtest 和 iperf3 有什么区别？</a></li><li class="toc-depth-3"><a href="#原生-ip-和广播-ip-有什么区别">原生 IP 和广播 IP 有什么区别？</a></li><li class="toc-depth-3"><a href="#fio-测出的随机写为什么特别高">fio 测出的随机写为什么特别高？</a></li></ul></details><div class="prose"><p>这篇 VPS 测速教程只讲一个顺序：先测国内三网的延迟和丢包，再看回程路由走的是什么线，最后才是带宽和硬件。顺序反过来，很容易被一键脚本里漂亮的数字带偏。</p>
+<p>一键脚本能一次跑完大部分项目，但它测的多是到海外节点的速度，国内三网的体验要换工具才看得出来。带宽还要分清测的是哪个方向、瓶颈在谁那里。</p>
+<p>下面用我测过的一台香港 VPS，逐项给出工具、命令和真实结果。</p>
+<h2 id="先分清哪些买前能测哪些买后才能测">先分清：哪些买前能测，哪些买后才能测</h2>
+<p>从国内发起的测试，只要有一个 IP 就能做，商家提供测试 IP 的话，下单前就能测完。要在 VPS 上运行的测试，只能买了之后做，最好赶在退款期内。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-wrap"><table><thead><tr><th>测试项</th><th>买前能测</th><th>常用工具</th><th>主要看什么</th></tr></thead><tbody><tr><td>三网延迟、丢包</td><td>能</td><td>Tcptest、ping.pe</td><td>三网平均延迟、晚上丢包</td></tr><tr><td>去程路由</td><td>能</td><td>在线路由追踪</td><td>有没有 <code>202.97</code></td></tr><tr><td>回程路由</td><td>不能</td><td>backtrace、traceroute</td><td>三网各走什么线</td></tr><tr><td>带宽</td><td>不能</td><td>bench.sh、iperf3</td><td>出站速度、瓶颈在哪</td></tr><tr><td>硬件、IP 质量</td><td>不能</td><td>sysbench、fio、IPQuality</td><td>硬盘、原生 IP</td></tr></tbody></table></div>
+<p>线路的好坏买前就能判断个大概，这也是测试 IP 最大的用处，具体测法可以参考 <a href="/posts/dmit-test-ip/">DMIT 测试 IP 与 Looking Glass 的用法</a>。带宽和硬件只能买后测，所以尽量挑有退款期的商家。</p>
+<h2 id="第一步测国内三网的延迟和丢包">第一步：测国内三网的延迟和丢包</h2>
+<p>延迟和丢包决定了国内访问快不快、稳不稳，是最先要看的。自己电脑上 ping 只能代表你一个地方、一家运营商，要用网页工具从全国多个节点同时测。</p>
+<p>我先用 Tcptest 测全国。它会从国内上百个节点同时 ping 你的 IP，按运营商和地区给出平均值，下面是这台香港 VPS 晚上的结果：</p>
+<p><img src="/_astro/tcptest-china-ping-hk-vps.BALSFxIw_1bBnl8.webp" alt="Tcptest 从国内 116 个节点 ping 香港 VPS，电信平均 48 ms、联通 51 ms、移动 46 ms" loading="lazy" decoding="async" width="1024" height="443"></p>
+<p>三网平均延迟都在 50 ms 左右：电信 48 ms，联通 51 ms，移动 46 ms。最慢的是呼和浩特联通，286 ms，这种个别节点的高延迟多半是当地网络的问题。</p>
+<p>判断时看平均值和大多数地区，不要被一两个节点吓到。</p>
+<p>延迟只是一次 ping 的结果，丢包要多 ping 几次才看得出来，偶尔丢一两个包很正常，持续丢包才是问题。我再用 ping.pe 让国内每个节点各 ping 100 次：</p>
+<p><img src="/_astro/pingpe-china-100-ping-loss.CSY75Xjn_Z1F3BP3.webp" alt="ping.pe 国内多个节点各 ping 香港 VPS 100 次，丢包率全部为 0%" loading="lazy" decoding="async" width="1024" height="295"></p>
+<p>图中电信、联通、移动的节点丢包都是 0%，平均延迟在 32 到 61 ms 之间，右侧的延迟曲线也很平，没有尖刺。读这两张图时，主要看以下几点：</p>
+<ul>
+<li>三网平均延迟差得多不多，哪家明显偏高</li>
+<li>晚上 8 点到 11 点的丢包率，越接近 0% 越好</li>
+<li>延迟曲线是否平稳，有没有频繁的尖刺</li>
+<li>慢的是个别地区，还是某家运营商整体都慢</li>
+</ul>
+<p>一定要在晚上再测一次。这台机器我也在中午测过，和晚上差距不大，只是晚上联通和移动的延迟和丢包略有上升。普通线路通常在晚上暴露问题，<a href="/posts/what-is-cn2-gia/">CN2 GIA 是什么</a>一文里有普通线路晚上丢包的对比。</p>
+<h2 id="第二步测回程路由看三网各走什么线">第二步：测回程路由，看三网各走什么线</h2>
+<p>延迟低不代表线路好。香港离内地近，普通线路的延迟也不高，晚上照样可能丢包，所以要看路由，弄清楚三家运营商的数据各走的是哪条骨干网。</p>
+<p>买了机器之后，最快的方法是在 VPS 上运行开源脚本 backtrace。它会从 VPS 追踪北京、上海、广州、成都四地的三网，几秒钟出结果：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">curl</span><span style="color:#9ECBFF"> https://raw.githubusercontent.com/zhanghanyun/backtrace/main/install.sh</span><span style="color:#79B8FF"> -sSf</span><span style="color:#F97583"> |</span><span style="color:#B392F0"> sh</span></span></code></pre>
+<aside class="note note-warning" role="note" data-astro-cid-2nmadbt7><p class="note-title" data-astro-cid-2nmadbt7>运行一键脚本之前</p><p>这类 <code>curl ... | sh</code>、<code>wget ... | bash</code> 命令会把网上的脚本下载下来，直接以 root 权限运行。运行前先看看项目页的来源和源码，尽量在新开或专门测试的机器上运行。</p></aside>
+<p>这台香港 VPS 的回程结果如下：</p>
+<p><img src="/_astro/backtrace-three-network-return-route.BfpQu3_L_1XFIFQ.webp" alt="backtrace 三网回程测试结果：上海、广州、成都电信显示电信 CN2，联通全部走 4837，移动全部走电信 163" loading="lazy" decoding="async" width="1012" height="379"></p>
+<p>上海、广州、成都的电信都是“电信CN2 [优质线路]”，联通全部走 4837，移动全部走电信的 163，都是普通线路。北京电信那一行显示的也是 4837。</p>
+<p>也就是说，这台机器只优化了电信。</p>
+<p>backtrace 只能说明进没进 CN2，分不出 CN2 GIA 和 CN2 GT。要确认是不是 GIA，得看完整路由。下面是从上海电信追踪到这台 VPS 的去程：</p>
+<p><img src="/_astro/shanghai-telecom-outbound-cn2-gia-route.DRanZ3Qw_1Prnkh.webp" alt="从上海电信追踪香港 VPS 的去程路由，经过两个 59.43 开头的 CN2 节点后到达香港，没有 202.97" loading="lazy" decoding="async" width="1024" height="311"></p>
+<p>上海电信接入后，连续经过 <code>59.43.80.142</code> 和 <code>59.43.130.214</code> 两个 CN2 节点，直接到达香港，全程没有一个 <code>202.97</code>，这是 CN2 GIA 的特征。</p>
+<p><code>59.43</code> 和 <code>202.97</code> 分别代表什么、去程和回程的完整测法、一键脚本有哪些局限，我在<a href="/posts/how-to-check-cn2-gia-route/">怎么判断 VPS 是不是 CN2 GIA</a>里讲得更细。只想快速看个结论，backtrace 加上一张去程路由就够了。</p>
+<h2 id="第三步测带宽先弄清测的是哪个方向">第三步：测带宽，先弄清测的是哪个方向</h2>
+<p>带宽最容易被误读，因为“上传”“下载”是站在谁的角度，每个工具不一样。测之前先想清楚：访客打开你的网站，数据是从 VPS 发出去的，所以对建站来说，<strong>VPS 的出站速度</strong>最重要。</p>
+<p>拿到机器后，我习惯先跑一遍 bench.sh。它会显示 CPU、内存等配置，测硬盘写入速度，再用 Speedtest 测到全球十几个节点的上传和下载速度：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">wget</span><span style="color:#79B8FF"> -qO-</span><span style="color:#9ECBFF"> bench.sh</span><span style="color:#F97583"> |</span><span style="color:#B392F0"> bash</span></span></code></pre>
+<p><img src="/_astro/bench-sh-hk-vps-result.Blxcn6vY_ZjDEDu.webp" alt="bench.sh 测试香港 VPS：AMD EPYC 7H12 两核，硬盘写入平均 499 MB/s，到多个节点上传约 350 到 900 Mbps，下载约 48 Mbps" loading="lazy" decoding="async" width="638" height="987"></p>
+<p>bench.sh 是在 VPS 上运行 Speedtest 的，表里的“Upload Speed”是 VPS 发给测速节点的速度，也就是出站；“Download Speed”是节点发给 VPS 的速度，也就是入站。</p>
+<p>这台机器的套餐带宽是 50 Mbps，入站方向所有节点正好都停在 50 Mbps 上下。出站反而测到约 850 Mbps，美国、欧洲也有 350 到 500 多 Mbps，不过规划用量时还是按套餐的 50 Mbps 算。</p>
+<p>一键脚本只测几个固定节点。想单独测某个节点、换个时间多测几次，可以装 Speedtest 官方的命令行版本，以 Debian、Ubuntu 为例，三条命令装好并运行：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">curl</span><span style="color:#79B8FF"> -s</span><span style="color:#9ECBFF"> https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh</span><span style="color:#F97583"> |</span><span style="color:#B392F0"> sudo</span><span style="color:#9ECBFF"> bash</span></span>
+<span class="line"><span style="color:#B392F0">sudo</span><span style="color:#9ECBFF"> apt-get</span><span style="color:#9ECBFF"> install</span><span style="color:#9ECBFF"> speedtest</span></span>
+<span class="line"><span style="color:#B392F0">speedtest</span></span></code></pre>
+<p>Speedtest 测的是 VPS 到测速节点，不是到你家。想知道“我家访问这台 VPS 有多快”，要用 iperf3 在两端之间直接测，VPS 上开服务端，自己电脑上连过去：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D"># 在 VPS 上启动服务端（需要放行 5201 端口）</span></span>
+<span class="line"><span style="color:#B392F0">iperf3</span><span style="color:#79B8FF"> -s</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 在自己电脑上运行，-R 表示由 VPS 发送、电脑接收</span></span>
+<span class="line"><span style="color:#B392F0">iperf3</span><span style="color:#79B8FF"> -c</span><span style="color:#9ECBFF"> VPS的IP</span><span style="color:#79B8FF"> -R</span></span></code></pre>
+<p>我家是 100M 的电信宽带，这台 VPS 发到我家稳定在 113 到 114 Mbps，跑满了家里的宽带。这时候瓶颈在家里，说明不了 VPS 的上限。</p>
+<p>所以用 iperf3 测之前，先确认自己的宽带有多快：测出来接近宽带上限，说明 VPS 这一侧没有拖后腿；明显低于宽带，再去查线路和 VPS。</p>
+<h2 id="第四步看配置cpu-和硬盘">第四步：看配置、CPU 和硬盘</h2>
+<p>bench.sh 的前半部分已经列出了配置：AMD EPYC 7H12 两核、内存约 2 GB，KVM 虚拟化，硬盘写入三次平均 499 MB/s。这个写入速度是用 <code>dd</code> 顺序写一个文件测的，看个大概够了。</p>
+<p>结果里还有一行“TCP Congestion Ctrl: cubic”，说明系统默认没有开启 BBR。BBR 能改善长距离传输的速度，买到机器后建议开启。</p>
+<p>需要更细的数据，比如想对比两台机器，用 sysbench 测 CPU 和内存，用 fio 测硬盘。以 Debian、Ubuntu 为例：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">apt</span><span style="color:#9ECBFF"> install</span><span style="color:#79B8FF"> -y</span><span style="color:#9ECBFF"> sysbench</span><span style="color:#9ECBFF"> fio</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># CPU：单线程，再按核心数跑多线程</span></span>
+<span class="line"><span style="color:#B392F0">sysbench</span><span style="color:#9ECBFF"> cpu</span><span style="color:#79B8FF"> --time=60</span><span style="color:#9ECBFF"> run</span></span>
+<span class="line"><span style="color:#B392F0">sysbench</span><span style="color:#9ECBFF"> cpu</span><span style="color:#79B8FF"> --time=60</span><span style="color:#79B8FF"> --threads=$(</span><span style="color:#B392F0">nproc</span><span style="color:#79B8FF">)</span><span style="color:#9ECBFF"> run</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 内存写入速度</span></span>
+<span class="line"><span style="color:#B392F0">sysbench</span><span style="color:#9ECBFF"> memory</span><span style="color:#9ECBFF"> run</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 硬盘顺序写、顺序读，1M 块</span></span>
+<span class="line"><span style="color:#B392F0">fio</span><span style="color:#79B8FF"> --name=seqw</span><span style="color:#79B8FF"> --rw=write</span><span style="color:#79B8FF"> --bs=1M</span><span style="color:#79B8FF"> --size=512M</span><span style="color:#79B8FF"> --direct=1</span><span style="color:#79B8FF"> --group_reporting</span></span>
+<span class="line"><span style="color:#B392F0">fio</span><span style="color:#79B8FF"> --name=seqr</span><span style="color:#79B8FF"> --rw=read</span><span style="color:#79B8FF"> --bs=1M</span><span style="color:#79B8FF"> --size=512M</span><span style="color:#79B8FF"> --direct=1</span><span style="color:#79B8FF"> --group_reporting</span></span></code></pre>
+<p>这台机器的结果如下：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-wrap"><table><thead><tr><th>项目</th><th>结果</th></tr></thead><tbody><tr><td>CPU 单线程</td><td>1552 事件/秒</td></tr><tr><td>CPU 双线程</td><td>3102 事件/秒</td></tr><tr><td>内存写入</td><td>4676 MiB/s</td></tr><tr><td>硬盘顺序写（1M）</td><td>1290 MiB/s</td></tr><tr><td>硬盘顺序读（1M）</td><td>215 MiB/s</td></tr></tbody></table></div>
+<p>CPU 的事件数单独看没有意义，要用同一条命令在不同机器上对比。双线程正好是单线程的两倍，至少测试时两个核心都能跑满，没有明显的资源争抢。</p>
+<p>fio 一定要加 <code>--direct=1</code>。</p>
+<p>我测 4K 随机写时没加这个参数，测出约 7.5 万 IOPS，比顺序写还夸张。这是系统缓存的速度，同一台机器 4K 随机读只有约 1100 IOPS，这样的结果没法和别家对比。</p>
+<h2 id="第五步看-ip-质量是不是原生-ip">第五步：看 IP 质量，是不是原生 IP</h2>
+<p>最后看 IP。做外贸站、注册海外平台账号、自己发邮件的，会在意 IP 是不是原生 IP、有没有被标记为高风险。开源脚本 IPQuality 一条命令就能查：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">bash</span><span style="color:#9ECBFF"> &lt;(</span><span style="color:#B392F0">curl</span><span style="color:#79B8FF"> -sL</span><span style="color:#9ECBFF"> https://Check.Place)</span><span style="color:#79B8FF"> -I</span></span></code></pre>
+<p><img src="/_astro/ipquality-native-ip-report.DBV6vov__Z1jo611.webp" alt="IPQuality 检测香港 VPS 的 IP：Maxmind 判定为原生 IP，多数数据库为低风险，25 端口出站可用，黑名单为 0" loading="lazy" decoding="async" width="663" height="782"></p>
+<p>报告比较长，与建站和外贸相关的主要看这几项：</p>
+<ul>
+<li>IP 类型：原生 IP，注册地和使用地都是香港</li>
+<li>使用类型：五个数据库都标为“机房”</li>
+<li>风险评分：多数为低风险，IPQS 给了 75 分“可疑”</li>
+<li>25 端口出站可用，黑名单 0 个</li>
+</ul>
+<p>原生 IP 指 IP 的注册地和实际所在地一致，这台注册在香港、用在香港。很多便宜的 VPS 用的是广播 IP，注册在一个国家、实际用在另一个国家，部分网站会因此判断错地区。</p>
+<p>“机房”是正常的，VPS 本来就在机房里，只有家庭宽带的 IP 才会显示为住宅。风险评分看多数，各家数据库的标准不一样，这台只有 IPQS 一家标为代理和 VPN，其他都是低风险。</p>
+<p>25 端口出站可用、黑名单为 0，自己搭建发信服务时，至少不会因为 IP 在黑名单上被拒收。</p>
+<h2 id="这台香港-vps-测下来怎么样">这台香港 VPS 测下来怎么样</h2>
+<p>这台是 DIYVM 的香港 VPS，把前面五步的结果放在一起：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-wrap"><table><thead><tr><th>测试项</th><th>结果</th><th>结论</th></tr></thead><tbody><tr><td>三网延迟</td><td>平均 46～51 ms</td><td>很低</td></tr><tr><td>晚上丢包</td><td>国内节点 0%</td><td>稳定</td></tr><tr><td>电信线路</td><td>去程全程 <code>59.43</code></td><td>CN2 GIA</td></tr><tr><td>联通、移动</td><td>回程 4837、163</td><td>未优化</td></tr><tr><td>带宽</td><td>套餐 50 Mbps，出站实测更高</td><td>按 50 Mbps 规划</td></tr><tr><td>IP</td><td>原生 IP，多数低风险</td><td>适合建站</td></tr></tbody></table></div>
+<p>一句话：电信是 CN2 GIA，联通和移动走普通线路，好在香港离得近，三网晚上的延迟和丢包都不错。</p>
+<p>它适合访客以电信用户为主的网站，或者需要香港原生 IP 的外贸站。</p>
+<div class="cta cta-box"><div class="cta-body"><p class="cta-title">DIYVM 香港 VPS</p><p class="cta-desc">电信去程 CN2 GIA，香港原生 IP，国内三网延迟低。联通、移动未优化，购买前先看清线路说明。</p></div><a class="cta-action" href="/go/diyvm/" rel="sponsored nofollow noopener" target="_blank">查看 DIYVM 香港套餐</a></div>
+<p>联通、移动用户多，或者想要三网回程都走高端线路的，这台就不是最合适的选择。可以看看三网都优化的商家，比如 <a href="/posts/dmit-review/">DMIT 评测</a>里的洛杉矶 Pro 系列。</p>
+<h2 id="总结买前测线路买后测带宽和硬件">总结：买前测线路，买后测带宽和硬件</h2>
+<p>测一台 VPS，按“三网延迟丢包、回程路由、带宽、硬件、IP 质量”的顺序来。前两项决定国内快不快、稳不稳，买前用测试 IP 就能测；后几项要在退款期内到 VPS 上跑一遍，结果和宣传对不上就及时退。</p>
+<p>现在就挑一家，拿测试 IP 照着测一遍：可以从<a href="/posts/bandwagonhost-cn2-gia-test/">搬瓦工 CN2 GIA 测试</a>或 <a href="/posts/dmit-test-ip/">DMIT 测试 IP</a>开始。</p>
+<h2 id="常见问题">常见问题</h2>
+<h3 id="一键测速脚本安全吗">一键测速脚本安全吗？</h3>
+<p>大多数常用脚本是开源的，可以在项目页看到源码。但它们都以 root 权限运行，运行前要确认来源，尽量在新开或专门测试的机器上运行，不要在跑着正式业务的服务器上随手执行。</p>
+<h3 id="vps-测速要在晚上测吗">VPS 测速要在晚上测吗？</h3>
+<p>要。晚上 8 点到 11 点是国际出口最拥挤的时候，普通线路的问题大多在这时出现。中午测得再好，也要在晚上再测一次。</p>
+<h3 id="没买-vps-能测速吗">没买 VPS 能测速吗？</h3>
+<p>能测一部分。用商家提供的测试 IP，可以在网页工具上测三网延迟、丢包和去程路由。回程路由、带宽和硬件要在 VPS 上测，只能买了之后测。</p>
+<h3 id="回程路由怎么看">回程路由怎么看？</h3>
+<p>在 VPS 上运行 backtrace，看三网各显示什么线路：电信看是不是 CN2，联通看 9929 还是 4837，移动看 CMIN2 还是 CMI、163。要区分 CN2 GIA 和 GT，需要看完整路由里 <code>59.43</code> 之后有没有出现 <code>202.97</code>。</p>
+<h3 id="benchsh-的下载速度为什么这么低">bench.sh 的下载速度为什么这么低？</h3>
+<p>bench.sh 的“下载”是测速节点发给 VPS 的速度，也就是入站。入站通常按套餐带宽限速，这台套餐是 50 Mbps，测出来也正好是这个数。访客打开网站走的是出站，要看“上传”那一列。</p>
+<h3 id="speedtest-和-iperf3-有什么区别">speedtest 和 iperf3 有什么区别？</h3>
+<p>speedtest 测的是 VPS 到某个测速节点的速度，适合看 VPS 本身的带宽。iperf3 测的是两台机器之间的速度，适合看你家到 VPS 实际能跑多快，但结果受你自己宽带的限制。</p>
+<h3 id="原生-ip-和广播-ip-有什么区别">原生 IP 和广播 IP 有什么区别？</h3>
+<p>原生 IP 的注册地和实际所在地一致，广播 IP 注册在一个国家、实际用在另一个国家。广播 IP 可能被部分网站判断成错误的地区，做外贸、注册海外平台时原生 IP 更省心。</p>
+<h3 id="fio-测出的随机写为什么特别高">fio 测出的随机写为什么特别高？</h3>
+<p>多半是没有加 <code>--direct=1</code>，数据写进了系统缓存，测出的是内存的速度。加上这个参数再测，结果才能和其他机器对比。</p></div><section class="related"><h2 class="section-title">相关文章</h2><ul class="post-list"><li><a class="post-list-title" href="/posts/bandwagonhost-cn2-gia-test/">搬瓦工 CN2 GIA 测试：各机房测试 IP 和实测结果</a><p class="post-list-desc">搬瓦工 CN2 GIA 测试：按官方 2026 年 10 月的机房清单整理 10 个 CN2 GIA 机房和测试 IP，附洛杉矶 DC9 和香港的延迟丢包实测、DC9 的去程路由，并与搬瓦工普通线路对照，教你看出是不是 CN2 GIA。</p><p class="meta"><time datetime="2026-11-09T00:00:00.000Z">2026年11月9日</time></p></li><li><a class="post-list-title" href="/posts/dmit-test-ip/">DMIT 测试 IP 汇总（2026 年 10 月核对）：去程回程怎么测</a><p class="post-list-desc">DMIT 测试 IP 汇总：洛杉矶、香港、东京 8 个地址，2026 年 10 月从官方 Looking Glass 核对。在本地测去程，在 lg.dmit.sh 测回程，附洛杉矶 Pro 的全国延迟、晚高峰丢包和回程路由实测。</p><p class="meta"><time datetime="2026-11-09T00:00:00.000Z">2026年11月9日</time></p></li><li><a class="post-list-title" href="/posts/how-to-check-cn2-gia-route/">怎么判断 VPS 是不是 CN2 GIA？看懂去程和回程路由</a><p class="post-list-desc">怎么判断 VPS 是不是 CN2 GIA？做路由追踪，看 59.43 开头的 CN2 节点之后有没有交给 202.97。本文用真实截图讲去程、回程分别怎么测，一键脚本的局限，以及 CN2 GT 和普通线路长什么样。</p><p class="meta"><time datetime="2026-11-09T00:00:00.000Z">2026年11月9日</time></p></li></ul></section></article></div><aside class="sidebar"><section class="widget"><h2 class="widget-title">推荐文章</h2><ol class="widget-list widget-ranked"><li><a href="/posts/what-is-cn2-gia/" title="CN2 GIA 是什么？电信高端线路为什么晚高峰也稳">CN2 GIA 是什么？电信高端线路为什么晚高峰也稳</a></li><li><a href="/posts/dmit-review/" title="DMIT 评测：Premium、Eyeball、Tier 1 怎么选，附洛杉矶去回程实测">DMIT 评测：Premium、Eyeball、Tier 1 怎么选，附洛杉矶去回程实测</a></li><li><a href="/posts/bandwagonhost-cn2-gia/" title="搬瓦工 CN2 GIA 套餐总览：哪些机房才是 CN2 GIA，各系列多少钱">搬瓦工 CN2 GIA 套餐总览：哪些机房才是 CN2 GIA，各系列多少钱</a></li></ol></section><nav class="widget toc toc-side" aria-label="目录"><h2 class="widget-title">目录</h2><ul><li class="toc-depth-2"><a href="#先分清哪些买前能测哪些买后才能测">先分清：哪些买前能测，哪些买后才能测</a></li><li class="toc-depth-2"><a href="#第一步测国内三网的延迟和丢包">第一步：测国内三网的延迟和丢包</a></li><li class="toc-depth-2"><a href="#第二步测回程路由看三网各走什么线">第二步：测回程路由，看三网各走什么线</a></li><li class="toc-depth-2"><a href="#第三步测带宽先弄清测的是哪个方向">第三步：测带宽，先弄清测的是哪个方向</a></li><li class="toc-depth-2"><a href="#第四步看配置cpu-和硬盘">第四步：看配置、CPU 和硬盘</a></li><li class="toc-depth-2"><a href="#第五步看-ip-质量是不是原生-ip">第五步：看 IP 质量，是不是原生 IP</a></li><li class="toc-depth-2"><a href="#这台香港-vps-测下来怎么样">这台香港 VPS 测下来怎么样</a></li><li class="toc-depth-2"><a href="#总结买前测线路买后测带宽和硬件">总结：买前测线路，买后测带宽和硬件</a></li><li class="toc-depth-2"><a href="#常见问题">常见问题</a></li><li class="toc-depth-3"><a href="#一键测速脚本安全吗">一键测速脚本安全吗？</a></li><li class="toc-depth-3"><a href="#vps-测速要在晚上测吗">VPS 测速要在晚上测吗？</a></li><li class="toc-depth-3"><a href="#没买-vps-能测速吗">没买 VPS 能测速吗？</a></li><li class="toc-depth-3"><a href="#回程路由怎么看">回程路由怎么看？</a></li><li class="toc-depth-3"><a href="#benchsh-的下载速度为什么这么低">bench.sh 的下载速度为什么这么低？</a></li><li class="toc-depth-3"><a href="#speedtest-和-iperf3-有什么区别">speedtest 和 iperf3 有什么区别？</a></li><li class="toc-depth-3"><a href="#原生-ip-和广播-ip-有什么区别">原生 IP 和广播 IP 有什么区别？</a></li><li class="toc-depth-3"><a href="#fio-测出的随机写为什么特别高">fio 测出的随机写为什么特别高？</a></li></ul></nav></aside></div></main><footer class="site-footer"><div class="container site-footer-inner"><nav aria-label="页脚导航"><a href="/archive/">全部文章</a><a href="/about/">关于</a><a href="/disclosure/">联盟披露</a><a href="/rss.xml">RSS</a></nav><p>© 2026 CN2 GIA VPS 指南。本站部分链接为联盟链接，通过它们购买不会增加你的费用。</p></div></footer><button class="back-to-top" id="back-to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button><script type="module">var e=document.getElementById(`site-header`),t=document.getElementById(`back-to-top`),n=window.scrollY;function r(){let r=window.scrollY;Math.abs(r-n)>4&&(e.classList.toggle(`is-hidden`,r>n&&r>120),n=r),e.classList.toggle(`is-scrolled`,r>8),t.classList.toggle(`is-visible`,r>300)}window.addEventListener(`scroll`,r,{passive:!0}),t.addEventListener(`click`,()=>window.scrollTo({top:0,behavior:`smooth`})),r();</script></body></html>

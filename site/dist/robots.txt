@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /go/
+
+Sitemap: https://fast-cn2gia.github.io/sitemap-index.xml

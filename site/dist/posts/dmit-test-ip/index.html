@@ -1,0 +1,195 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>DMIT 测试 IP 汇总（2026 年 10 月核对）：去程回程怎么测 | CN2 GIA VPS 指南</title><meta name="description" content="DMIT 测试 IP 汇总：洛杉矶、香港、东京 8 个地址，2026 年 10 月从官方 Looking Glass 核对。在本地测去程，在 lg.dmit.sh 测回程，附洛杉矶 Pro 的全国延迟、晚高峰丢包和回程路由实测。"><link rel="canonical" href="https://fast-cn2gia.github.io/posts/dmit-test-ip/"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="alternate" type="application/rss+xml" title="CN2 GIA VPS 指南" href="/rss.xml"><link rel="sitemap" href="/sitemap-index.xml"><meta property="og:type" content="article"><meta property="og:site_name" content="CN2 GIA VPS 指南"><meta property="og:title" content="DMIT 测试 IP 汇总（2026 年 10 月核对）：去程回程怎么测"><meta property="og:description" content="DMIT 测试 IP 汇总：洛杉矶、香港、东京 8 个地址，2026 年 10 月从官方 Looking Glass 核对。在本地测去程，在 lg.dmit.sh 测回程，附洛杉矶 Pro 的全国延迟、晚高峰丢包和回程路由实测。"><meta property="og:url" content="https://fast-cn2gia.github.io/posts/dmit-test-ip/"><meta property="og:locale" content="zh_CN"><meta name="twitter:card" content="summary"><script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"DMIT 测试 IP 汇总（2026 年 10 月核对）：去程回程怎么测","description":"DMIT 测试 IP 汇总：洛杉矶、香港、东京 8 个地址，2026 年 10 月从官方 Looking Glass 核对。在本地测去程，在 lg.dmit.sh 测回程，附洛杉矶 Pro 的全国延迟、晚高峰丢包和回程路由实测。","datePublished":"2026-11-09T00:00:00.000Z","dateModified":"2026-11-09T00:00:00.000Z","author":{"@type":"Person","name":"站长"},"publisher":{"@type":"Organization","name":"CN2 GIA VPS 指南"},"mainEntityOfPage":"https://fast-cn2gia.github.io/posts/dmit-test-ip/","inLanguage":"zh-CN"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://fast-cn2gia.github.io/"},{"@type":"ListItem","position":2,"name":"教程","item":"https://fast-cn2gia.github.io/category/tutorial/"},{"@type":"ListItem","position":3,"name":"DMIT 测试 IP 汇总（2026 年 10 月核对）：去程回程怎么测","item":"https://fast-cn2gia.github.io/posts/dmit-test-ip/"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"DMIT 的测试 IP 在哪里找？","acceptedAnswer":{"@type":"Answer","text":"在官方 Looking Glass 页面 lg.dmit.sh。选中一个服务器后，页面会显示它的机房、产品线、IPv4 地址和测速文件，本文的表格就是从这里抄的。"}},{"@type":"Question","name":"为什么网上的 DMIT 测试 IP 和这里的不一样？","acceptedAnswer":{"@type":"Answer","text":"测试地址会随机房调整而变化，网上的整理大多没有注明日期，有的已经和官方页面对不上。以官方页面当前显示的为准。"}},{"@type":"Question","name":"DMIT 哪个测试 IP 是 CN2 GIA？","acceptedAnswer":{"@type":"Answer","text":"看 Pro 系列。洛杉矶 Pro 的测试 IP 是 179.255.100.100，回程三网 CN2 GIA，去程电信 CN2 GIA、联通 CUP、移动 CMIN2。香港、东京 Pro 的线路，可以用 Looking Glass 自己测。"}},{"@type":"Question","name":"DMIT Looking Glass 测的是去程还是回程？","acceptedAnswer":{"@type":"Answer","text":"回程。测试从你选中的 DMIT 服务器发起，追踪的是机房到你这一段。去程要在自己电脑上对测试 IP 做路由追踪。"}},{"@type":"Question","name":"测试 IP 的结果和买到的机器一样吗？","acceptedAnswer":{"@type":"Answer","text":"测试 IP 放在对应机房和产品线的网络里，用来代表这条线路，路由走向可以作为参考。具体机器的延迟和丢包会有小幅差异，买到之后建议再测一遍。"}},{"@type":"Question","name":"测试 IP ping 不通怎么办？","acceptedAnswer":{"@type":"Answer","text":"先回官方页面核对地址是否已经更换。地址没问题仍然不通，换一个机房的测试 IP 对比，同时检查本地网络有没有经过代理或加速器。"}}]}</script><style>.note[data-astro-cid-2nmadbt7]{border-left:4px solid var(--note-accent);background:var(--note-bg);border-radius:0 6px 6px 0;margin:1.5em 0;padding:.75em 1em;font-size:.88em;line-height:1.7}.note-tip[data-astro-cid-2nmadbt7]{--note-accent:#7a93ac;--note-bg:#7a93ac1a}.note-warning[data-astro-cid-2nmadbt7]{--note-accent:#d9a21b;--note-bg:#d9a21b1a}.note-title[data-astro-cid-2nmadbt7]{margin:0 0 .25em;font-weight:600}.note[data-astro-cid-2nmadbt7] p{margin:0}.note[data-astro-cid-2nmadbt7] p+p{margin-top:.5em}
+</style><link rel="stylesheet" href="/_astro/Base.BEzORkuK.css"></head><body><header class="site-header" id="site-header"><div class="container site-header-inner"><a class="site-name" href="/"><svg class="site-logo" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="currentColor"></rect><path d="M8 21h16M8 16h10M8 11h16" stroke="#fff" stroke-width="2.5" stroke-linecap="round"></path></svg>CN2 GIA VPS 指南</a><nav class="site-nav" aria-label="主导航"><a href="/category/basics/">基础知识</a><a href="/category/tutorial/" aria-current="page">教程</a><a href="/category/review/">评测</a><a href="/category/recommend/">推荐</a></nav></div></header><main class="container"><div class="layout"><div class="layout-main"><article class="post"><nav class="breadcrumb" aria-label="面包屑"><a href="/">首页</a><span aria-hidden="true">/</span><a href="/category/tutorial/">教程</a></nav><h1>DMIT 测试 IP 汇总（2026 年 10 月核对）：去程回程怎么测</h1><p class="meta"><span>站长</span><time datetime="2026-11-09T00:00:00.000Z">发布于 2026年11月9日</time></p><details class="toc toc-inline"><summary>目录</summary><ul><li class="toc-depth-2"><a href="#dmit-测试-ip-汇总2026-年-10-月核对">DMIT 测试 IP 汇总（2026 年 10 月核对）</a></li><li class="toc-depth-2"><a href="#先分清方向本地测去程looking-glass-测回程">先分清方向：本地测去程，Looking Glass 测回程</a></li><li class="toc-depth-2"><a href="#第一步ping-测试-ip看延迟和丢包">第一步：ping 测试 IP，看延迟和丢包</a></li><li class="toc-depth-2"><a href="#第二步追踪去程路由">第二步：追踪去程路由</a></li><li class="toc-depth-2"><a href="#第三步用-looking-glass-测回程">第三步：用 Looking Glass 测回程</a></li><li class="toc-depth-2"><a href="#三个机房怎么选">三个机房怎么选</a></li><li class="toc-depth-2"><a href="#测试结果不理想怎么办">测试结果不理想怎么办</a></li><li class="toc-depth-2"><a href="#总结测完去程和回程再下单">总结：测完去程和回程再下单</a></li><li class="toc-depth-2"><a href="#常见问题">常见问题</a></li><li class="toc-depth-3"><a href="#dmit-的测试-ip-在哪里找">DMIT 的测试 IP 在哪里找？</a></li><li class="toc-depth-3"><a href="#为什么网上的-dmit-测试-ip-和这里的不一样">为什么网上的 DMIT 测试 IP 和这里的不一样？</a></li><li class="toc-depth-3"><a href="#dmit-哪个测试-ip-是-cn2-gia">DMIT 哪个测试 IP 是 CN2 GIA？</a></li><li class="toc-depth-3"><a href="#dmit-looking-glass-测的是去程还是回程">DMIT Looking Glass 测的是去程还是回程？</a></li><li class="toc-depth-3"><a href="#测试-ip-的结果和买到的机器一样吗">测试 IP 的结果和买到的机器一样吗？</a></li><li class="toc-depth-3"><a href="#测试-ip-ping-不通怎么办">测试 IP ping 不通怎么办？</a></li></ul></details><div class="prose"><p>DMIT 测试 IP 以官方 Looking Glass 页面 <code>lg.dmit.sh</code> 上的为准，目前洛杉矶、香港、东京 3 个机房共 8 个。下面的表是我 2026 年 10 月从官方页面逐个抄下来的。</p>
+<p>网上流传的不少地址，已经和官方对不上了。</p>
+<p>测法分两半：在自己这边测去程，在 Looking Glass 上测回程。不知道选哪个机房，就先测洛杉矶 Pro，这是我首推的线路。</p>
+<h2 id="dmit-测试-ip-汇总2026-年-10-月核对">DMIT 测试 IP 汇总（2026 年 10 月核对）</h2>
+<p>下面 8 个地址都来自 DMIT 官方 Looking Glass，每个服务器对应一个机房和一条产品线（页面上叫 Routing Profile）。同一个机房，不同产品线走的线路不一样，测之前先认准产品线。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-wrap"><table><thead><tr><th>机房</th><th>数据中心</th><th>产品线</th><th>测试 IP</th></tr></thead><tbody><tr><td>洛杉矶</td><td>West 7 Center</td><td>Pro</td><td><code>179.255.100.100</code></td></tr><tr><td>洛杉矶</td><td>West 7 Center</td><td>Eyeball</td><td><code>179.255.150.150</code></td></tr><tr><td>洛杉矶</td><td>West 7 Center</td><td>Tier 1</td><td><code>136.175.177.177</code></td></tr><tr><td>香港</td><td>Equinix HK2</td><td>Pro</td><td><code>191.222.216.216</code></td></tr><tr><td>香港</td><td>Equinix HK2</td><td>Eyeball</td><td><code>191.222.220.220</code></td></tr><tr><td>香港</td><td>Equinix HK2</td><td>Tier 1</td><td><code>191.223.210.210</code></td></tr><tr><td>东京</td><td>Equinix TY8</td><td>Pro</td><td><code>191.222.210.210</code></td></tr><tr><td>东京</td><td>Equinix TY8</td><td>Tier 1</td><td><code>191.222.223.223</code></td></tr></tbody></table></div>
+<p>Pro 是三网优化的高端线路，洛杉矶 Pro 的回程三网都走 CN2 GIA。Eyeball 和 Tier 1 是另外两条产品线，定位和价格各不相同，区别放在 <a href="/posts/dmit-review/">DMIT 评测</a>里讲。</p>
+<p>东京目前没有 Eyeball。</p>
+<p>搜“DMIT 测试 IP”能找到不少整理好的表，但里面多是 <code>154.17</code>、<code>103.117</code>、<code>45.88</code> 开头的地址，和官方页面现在显示的一个都对不上，几篇之间也互相矛盾。</p>
+<aside class="note note-tip" role="note" data-astro-cid-2nmadbt7><p class="note-title" data-astro-cid-2nmadbt7>以官方页面为准</p>测试 IP 会随机房调整而变化。上表核对于 2026 年 10 月，使用前在 <code>lg.dmit.sh</code> 上选中对应的服务器，看一眼页面显示的 IPv4 地址。</aside>
+<h2 id="先分清方向本地测去程looking-glass-测回程">先分清方向：本地测去程，Looking Glass 测回程</h2>
+<p>数据在你和机房之间一来一回，去和回可能走两条不同的线路。去程是你到机房，回程是机房到你，两个方向都测过，结论才完整。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-wrap"><table><thead><tr><th>方向</th><th>在哪里测</th><th>用什么工具</th></tr></thead><tbody><tr><td>去程（你 → 机房）</td><td>自己电脑，或 ITDOG 等网页工具</td><td>tracert、traceroute</td></tr><tr><td>回程（机房 → 你）</td><td>DMIT Looking Glass</td><td>nexttrace、traceroute、mtr</td></tr></tbody></table></div>
+<p>不少教程把两者混在一起讲，或者干脆不讲。路由追踪只显示从发起方出发的那一段：在自己电脑上追踪测试 IP，看到的是去程；在 Looking Glass 上让机房追踪你的 IP，看到的是回程。</p>
+<p>ping 不分方向，它的延迟是一来一回的总和，只用来看快慢和丢包。</p>
+<h2 id="第一步ping-测试-ip看延迟和丢包">第一步：ping 测试 IP，看延迟和丢包</h2>
+<p>先在自己电脑上 ping 测试 IP 50 次：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D"># Windows</span></span>
+<span class="line"><span style="color:#B392F0">ping</span><span style="color:#79B8FF"> -n</span><span style="color:#79B8FF"> 50</span><span style="color:#79B8FF"> 179.255.100.100</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># macOS / Linux</span></span>
+<span class="line"><span style="color:#B392F0">ping</span><span style="color:#79B8FF"> -c</span><span style="color:#79B8FF"> 50</span><span style="color:#79B8FF"> 179.255.100.100</span></span></code></pre>
+<p>自己电脑只能代表你所在的一个地方、一家运营商。想看全国三网的情况，用 ITDOG 这类网页工具，从国内几百个节点同时 ping。下面是洛杉矶 Pro 测试 IP 的结果：</p>
+<p><img src="/_astro/dmit-lax-pro-itdog-ping.C9NIUqaK_s21SI.webp" alt="ITDOG 从国内 306 个监测点 ping DMIT 洛杉矶 Pro 测试 IP，全国平均 161 ms，电信 159 ms、联通 164 ms、移动 163 ms" loading="lazy" decoding="async" width="1024" height="457"></p>
+<p>306 个监测点全国平均 161 ms，电信 159 ms、联通 164 ms、移动 163 ms，三网只差几毫秒。地图上全国都落在 101 到 200 ms 这一档，最快的是上海电信 126 ms。</p>
+<p>洛杉矶到国内，这是正常水平。</p>
+<p>延迟主要由距离决定，丢包才看得出线路堵不堵。我在晚上九点多用 ping.pe 让国内 13 个节点各 ping 这个测试 IP 100 次：</p>
+<p><img src="/_astro/dmit-lax-pro-pingpe-china-loss.hzjxEKRQ_vzT0v.webp" alt="ping.pe 国内 13 个节点各 ping DMIT 洛杉矶 Pro 测试 IP 100 次，电信、联通、移动和云厂商节点的丢包率全部为 0%" loading="lazy" decoding="async" width="1328" height="403"></p>
+<p>电信、联通、移动和几家云厂商的节点，丢包全部是 0%。延迟波动（StDev）最大的是江苏移动，也只有 0.73 ms，其余大多在 0.2 ms 以下。</p>
+<p>至少在这次晚高峰测试里，这条线路没有出现拥堵。每一项数字怎么看，可以看 <a href="/posts/vps-speed-test/">VPS 测速教程</a>。</p>
+<h2 id="第二步追踪去程路由">第二步：追踪去程路由</h2>
+<p>接着追踪路由，确认线路是不是宣传的那一种：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D"># Windows</span></span>
+<span class="line"><span style="color:#B392F0">tracert</span><span style="color:#79B8FF"> 179.255.100.100</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># macOS / Linux</span></span>
+<span class="line"><span style="color:#B392F0">traceroute</span><span style="color:#79B8FF"> 179.255.100.100</span></span></code></pre>
+<p>电信用户看路由里的 <code>59.43</code> 节点：跨境段走 <code>59.43</code>、之后没有交给 <code>202.97</code>，才是 CN2 GIA。联通、移动用户看是否走了自家的高端线路。以洛杉矶 Pro 为例，去程三网各走各的优化线路：</p>
+<ul>
+<li>电信：CN2 GIA，节点以 <code>59.43</code> 开头</li>
+<li>联通：9929 / CUP 高端线路</li>
+<li>移动：CMIN2</li>
+</ul>
+<p>路由里每一跳怎么读、怎么区分 CN2 GIA 和 CN2 GT，<a href="/posts/how-to-check-cn2-gia-route/">怎么判断 VPS 是不是 CN2 GIA</a> 里有逐跳的讲解，这里不再重复。</p>
+<h2 id="第三步用-looking-glass-测回程">第三步：用 Looking Glass 测回程</h2>
+<p>回程通常要买了机器才能测，DMIT 的 Looking Glass 省掉了这一步。选好服务器，它就从那台服务器向你给的地址发起测试，操作分四步：</p>
+<ol>
+<li>在浏览器打开 <code>lg.dmit.sh</code></li>
+<li>在 Select a server 里选机房和产品线</li>
+<li>工具选 nexttrace 或 traceroute</li>
+<li>填入自己的公网 IP，点运行</li>
+</ol>
+<p>工具我推荐 nexttrace。它会在每一跳后面标出所属的网络（AS 号）和大致位置，比 traceroute 好读得多，一眼就能看出数据在哪里进了国内、走的是哪张骨干网。</p>
+<p>下面是我在洛杉矶 Pro 的机器上追踪一个移动 IP 的回程。在 Looking Glass 上选洛杉矶 Pro，测的也是这段从机房出发的线路：</p>
+<p><img src="/_astro/dmit-lax-pro-return-traceroute-mobile.C3x0NUAQ_1zeS9q.webp" alt="DMIT 洛杉矶 Pro 回程路由追踪到移动 IP，出机房后连续经过四个 59.43 开头的 CN2 节点，没有 202.97" loading="lazy" decoding="async" width="669" height="220"></p>
+<p>出机房后连续四跳都是 <code>59.43</code> 开头的 CN2 节点，全程没有出现 <code>202.97</code>。目标是移动的 IP，说明移动用户的回程也走 CN2 GIA，这就是三网回程 CN2 GIA 的实际样子。</p>
+<p>页面上还有几样工具值得一用。mtr 会连续发包，能看出回程路上有没有丢包；每个服务器下方的测速文件，可以测从机房下载的速度。</p>
+<p>截图分享之前，记得把自己的公网 IP 打码。</p>
+<h2 id="三个机房怎么选">三个机房怎么选</h2>
+<p>选机房我只看一条：稳定比延迟更重要。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-wrap"><table><thead><tr><th>机房</th><th>延迟</th><th>适合谁</th></tr></thead><tbody><tr><td>洛杉矶 Pro</td><td>较高，全国平均约 161 ms</td><td>大多数人，首选</td></tr><tr><td>香港 Pro</td><td>三个机房中最低</td><td>预算充足、追求低延迟</td></tr><tr><td>东京 Pro</td><td>较低</td><td>想要低延迟的第二选择</td></tr></tbody></table></div>
+<p>我首推洛杉矶 Pro。它是三个机房里性价比最高的，三网都有优化线路，晚高峰 13 个节点零丢包。延迟比香港高出百来毫秒，但建站、远程登录这类日常使用，体感差别不大。</p>
+<div class="cta cta-box"><div class="cta-body"><p class="cta-title">DMIT 三网优化 VPS</p><p class="cta-desc">洛杉矶、香港、东京三个机房都有 Pro 线路，测完选好机房再下单。</p></div><a class="cta-action" href="/go/dmit/" rel="sponsored nofollow noopener" target="_blank">查看 DMIT 各机房套餐</a></div>
+<p>预算充足、对延迟敏感的，直接选香港，其次是东京。这两个机房我没有放实测数据，下单前拿上面的测试 IP 自己测一遍，再和洛杉矶的结果对比。</p>
+<h2 id="测试结果不理想怎么办">测试结果不理想怎么办</h2>
+<p>如果测出来延迟偏高或者有丢包，先别急着否定线路，很多时候是测试方法出了问题。按下面几项排查一遍：</p>
+<ul>
+<li>测试 IP 是否对应你想买的产品线</li>
+<li>是否只测了一次，没有晚上的数据</li>
+<li>本地网络是否正常，有没有开代理或加速器</li>
+</ul>
+<p>最后一项很容易被忽略。我核对这些地址时就遇到过：电脑的网络经过了本地代理，ping 所有测试 IP 都显示 0 ms，这样的结果没有任何参考价值。</p>
+<p>排除这些之后仍然不理想，先换 DMIT 另外两个机房的测试 IP 试试。都不满意，再按同样的方法做一次<a href="/posts/bandwagonhost-cn2-gia-test/">搬瓦工 CN2 GIA 测试</a>，哪家在你的网络上更稳，就选哪家。</p>
+<h2 id="总结测完去程和回程再下单">总结：测完去程和回程再下单</h2>
+<p>DMIT 的测试 IP 以官方 Looking Glass 为准。在自己这边测去程，在 Looking Glass 上测回程，两个方向都看过，结论才完整。选机房时稳定比延迟重要，洛杉矶 Pro 是性价比最高的起点。</p>
+<p>先拿洛杉矶 Pro 的测试 IP <code>179.255.100.100</code> 测一遍，结果满意再下单。</p>
+<div class="cta cta-summary"><p class="cta-eyebrow">DMIT</p><p class="cta-title">测完满意？去 DMIT 官网选机房</p><p class="cta-desc">洛杉矶 Pro 性价比最高，香港、东京延迟更低。</p><ul class="cta-points"><li>三个机房都有三网优化的 Pro 线路</li><li>洛杉矶 Pro 三网回程 CN2 GIA</li><li>洛杉矶 Pro 晚高峰国内 13 个节点零丢包</li></ul><a class="cta-action" href="/go/dmit/" rel="sponsored nofollow noopener" target="_blank">查看 DMIT 套餐</a><p class="cta-note">联盟链接，通过它购买不会增加你的费用</p></div>
+<h2 id="常见问题">常见问题</h2>
+<h3 id="dmit-的测试-ip-在哪里找">DMIT 的测试 IP 在哪里找？</h3>
+<p>在官方 Looking Glass 页面 <code>lg.dmit.sh</code>。选中一个服务器后，页面会显示它的机房、产品线、IPv4 地址和测速文件，本文的表格就是从这里抄的。</p>
+<h3 id="为什么网上的-dmit-测试-ip-和这里的不一样">为什么网上的 DMIT 测试 IP 和这里的不一样？</h3>
+<p>测试地址会随机房调整而变化，网上的整理大多没有注明日期，有的已经和官方页面对不上。以官方页面当前显示的为准。</p>
+<h3 id="dmit-哪个测试-ip-是-cn2-gia">DMIT 哪个测试 IP 是 CN2 GIA？</h3>
+<p>看 Pro 系列。洛杉矶 Pro 的测试 IP 是 <code>179.255.100.100</code>，回程三网 CN2 GIA，去程电信 CN2 GIA、联通 CUP、移动 CMIN2。香港、东京 Pro 的线路，可以用 Looking Glass 自己测。</p>
+<h3 id="dmit-looking-glass-测的是去程还是回程">DMIT Looking Glass 测的是去程还是回程？</h3>
+<p>回程。测试从你选中的 DMIT 服务器发起，追踪的是机房到你这一段。去程要在自己电脑上对测试 IP 做路由追踪。</p>
+<h3 id="测试-ip-的结果和买到的机器一样吗">测试 IP 的结果和买到的机器一样吗？</h3>
+<p>测试 IP 放在对应机房和产品线的网络里，用来代表这条线路，路由走向可以作为参考。具体机器的延迟和丢包会有小幅差异，买到之后建议再测一遍。</p>
+<h3 id="测试-ip-ping-不通怎么办">测试 IP ping 不通怎么办？</h3>
+<p>先回官方页面核对地址是否已经更换。地址没问题仍然不通，换一个机房的测试 IP 对比，同时检查本地网络有没有经过代理或加速器。</p></div><section class="related"><h2 class="section-title">相关文章</h2><ul class="post-list"><li><a class="post-list-title" href="/posts/bandwagonhost-cn2-gia-test/">搬瓦工 CN2 GIA 测试：各机房测试 IP 和实测结果</a><p class="post-list-desc">搬瓦工 CN2 GIA 测试：按官方 2026 年 10 月的机房清单整理 10 个 CN2 GIA 机房和测试 IP，附洛杉矶 DC9 和香港的延迟丢包实测、DC9 的去程路由，并与搬瓦工普通线路对照，教你看出是不是 CN2 GIA。</p><p class="meta"><time datetime="2026-11-09T00:00:00.000Z">2026年11月9日</time></p></li><li><a class="post-list-title" href="/posts/how-to-check-cn2-gia-route/">怎么判断 VPS 是不是 CN2 GIA？看懂去程和回程路由</a><p class="post-list-desc">怎么判断 VPS 是不是 CN2 GIA？做路由追踪，看 59.43 开头的 CN2 节点之后有没有交给 202.97。本文用真实截图讲去程、回程分别怎么测，一键脚本的局限，以及 CN2 GT 和普通线路长什么样。</p><p class="meta"><time datetime="2026-11-09T00:00:00.000Z">2026年11月9日</time></p></li><li><a class="post-list-title" href="/posts/vps-speed-test/">VPS 测速教程：延迟、丢包、带宽和回程路由怎么测（附实测）</a><p class="post-list-desc">VPS 测速教程：用一台香港 CN2 GIA VPS 的真实测试结果，讲清怎么测国内三网的延迟和丢包、回程路由、带宽和硬盘性能，每一项看哪个数字、什么结果算正常。</p><p class="meta"><time datetime="2026-11-09T00:00:00.000Z">2026年11月9日</time></p></li></ul></section></article></div><aside class="sidebar"><section class="widget"><h2 class="widget-title">推荐文章</h2><ol class="widget-list widget-ranked"><li><a href="/posts/what-is-cn2-gia/" title="CN2 GIA 是什么？电信高端线路为什么晚高峰也稳">CN2 GIA 是什么？电信高端线路为什么晚高峰也稳</a></li><li><a href="/posts/dmit-review/" title="DMIT 评测：Premium、Eyeball、Tier 1 怎么选，附洛杉矶去回程实测">DMIT 评测：Premium、Eyeball、Tier 1 怎么选，附洛杉矶去回程实测</a></li><li><a href="/posts/bandwagonhost-cn2-gia/" title="搬瓦工 CN2 GIA 套餐总览：哪些机房才是 CN2 GIA，各系列多少钱">搬瓦工 CN2 GIA 套餐总览：哪些机房才是 CN2 GIA，各系列多少钱</a></li></ol></section><nav class="widget toc toc-side" aria-label="目录"><h2 class="widget-title">目录</h2><ul><li class="toc-depth-2"><a href="#dmit-测试-ip-汇总2026-年-10-月核对">DMIT 测试 IP 汇总（2026 年 10 月核对）</a></li><li class="toc-depth-2"><a href="#先分清方向本地测去程looking-glass-测回程">先分清方向：本地测去程，Looking Glass 测回程</a></li><li class="toc-depth-2"><a href="#第一步ping-测试-ip看延迟和丢包">第一步：ping 测试 IP，看延迟和丢包</a></li><li class="toc-depth-2"><a href="#第二步追踪去程路由">第二步：追踪去程路由</a></li><li class="toc-depth-2"><a href="#第三步用-looking-glass-测回程">第三步：用 Looking Glass 测回程</a></li><li class="toc-depth-2"><a href="#三个机房怎么选">三个机房怎么选</a></li><li class="toc-depth-2"><a href="#测试结果不理想怎么办">测试结果不理想怎么办</a></li><li class="toc-depth-2"><a href="#总结测完去程和回程再下单">总结：测完去程和回程再下单</a></li><li class="toc-depth-2"><a href="#常见问题">常见问题</a></li><li class="toc-depth-3"><a href="#dmit-的测试-ip-在哪里找">DMIT 的测试 IP 在哪里找？</a></li><li class="toc-depth-3"><a href="#为什么网上的-dmit-测试-ip-和这里的不一样">为什么网上的 DMIT 测试 IP 和这里的不一样？</a></li><li class="toc-depth-3"><a href="#dmit-哪个测试-ip-是-cn2-gia">DMIT 哪个测试 IP 是 CN2 GIA？</a></li><li class="toc-depth-3"><a href="#dmit-looking-glass-测的是去程还是回程">DMIT Looking Glass 测的是去程还是回程？</a></li><li class="toc-depth-3"><a href="#测试-ip-的结果和买到的机器一样吗">测试 IP 的结果和买到的机器一样吗？</a></li><li class="toc-depth-3"><a href="#测试-ip-ping-不通怎么办">测试 IP ping 不通怎么办？</a></li></ul></nav></aside></div></main><footer class="site-footer"><div class="container site-footer-inner"><nav aria-label="页脚导航"><a href="/archive/">全部文章</a><a href="/about/">关于</a><a href="/disclosure/">联盟披露</a><a href="/rss.xml">RSS</a></nav><p>© 2026 CN2 GIA VPS 指南。本站部分链接为联盟链接，通过它们购买不会增加你的费用。</p></div></footer><button class="back-to-top" id="back-to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button><script type="module">var e=document.getElementById(`site-header`),t=document.getElementById(`back-to-top`),n=window.scrollY;function r(){let r=window.scrollY;Math.abs(r-n)>4&&(e.classList.toggle(`is-hidden`,r>n&&r>120),n=r),e.classList.toggle(`is-scrolled`,r>8),t.classList.toggle(`is-visible`,r>300)}window.addEventListener(`scroll`,r,{passive:!0}),t.addEventListener(`click`,()=>window.scrollTo({top:0,behavior:`smooth`})),r();</script></body></html>
